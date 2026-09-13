@@ -124,12 +124,21 @@ function makeCard(item){
   return c;
 }
 
+/* xáo trộn Fisher–Yates: mọi thứ tự đều có xác suất như nhau */
+function shuffleItems(){
+  for(var i=items.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp = items[i]; items[i] = items[j]; items[j] = tmp;
+  }
+}
+
 function renderTray(){
   tray.innerHTML = '';
   for(var i=0;i<items.length;i++){
     tray.appendChild(makeCard(items[i]));
   }
 }
+shuffleItems();
 renderTray();
 layoutScene();
 window.addEventListener('load', layoutScene);
@@ -216,6 +225,6 @@ function resetGame(){
   document.getElementById('win-banner').classList.remove('show');
   var badgeWraps = document.querySelectorAll('.placed-badges');
   for(var i=0;i<badgeWraps.length;i++){ badgeWraps[i].innerHTML = ''; }
-  items = items.slice().sort(function(){ return Math.random()-0.5; });
+  shuffleItems();
   renderTray();
 }
