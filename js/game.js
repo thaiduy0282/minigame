@@ -61,16 +61,16 @@ function iconSrc(id){ return ICON_DIR + id + '.png'; }
 
 /* why = câu giải thích ngắn hiện trong hộp thoại khi cất đúng */
 var items = [
-  {id:'suachua', label:'Sữa chua', cat:'fridge', why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
-  {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
-  {id:'bongcai', label:'Bông cải xanh', cat:'fridge', why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
+  {id:'suachua', label:'Sữa chua', cat:'fridge', spot:{left:'45%', bottom:'65%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
+  {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, spot:{left:'45%', bottom:'79%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
+  {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'45%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
   {id:'nuocmam', label:'Nước mắm', cat:'spice', bigBadge:true, why:'Nước mắm để kệ gia vị, nhớ đậy nắp thật kín.'},
   {id:'tieu', label:'Hũ tiêu', cat:'spice', why:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.'},
 
-  {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
-  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
-  {id:'chen', label:'Chén', cat:'cabinet', why:'Chén rửa sạch rồi cất vào tủ cho khỏi bám bụi và ruồi đậu.'},
+  {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
+  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
+  {id:'chen', label:'Chén', cat:'cabinet', spot:{left:'6%',  bottom:'49%'}, why:'Chén rửa sạch rồi cất vào tủ cho khỏi bám bụi và ruồi đậu.'},
 
   {id:'racgiay', label:'Giấy bẩn', cat:'trash', why:'Giấy bẩn có nhiều vi khuẩn, phải bỏ ngay vào thùng rác.'},
   {id:'vochuoi', label:'Vỏ chuối', cat:'trash', why:'Vỏ chuối là rác. Để lâu sẽ thu hút ruồi và có mùi hôi.'}
@@ -95,6 +95,7 @@ function layoutScene(){
 }
 /* Đo chiều cao khay khi còn đủ món rồi khoá lại, để khay không co dần
    lúc học sinh cất bớt đồ. Đo bằng một bản sao ẩn nên không ảnh hưởng bàn chơi. */
+var TRAY_EXTRA = 5;    /* nới thêm chiều cao cho khay đồ, chỉnh số này nếu muốn cao hơn */
 function lockTrayHeight(){
   var box = document.querySelector('.box.items');
   if(!box) return;
@@ -112,7 +113,7 @@ function lockTrayHeight(){
   document.body.appendChild(ghost);
   var h = ghost.offsetHeight;
   document.body.removeChild(ghost);
-  if(h > 0) box.style.height = h + 'px';
+  if(h > 0) box.style.height = (h + TRAY_EXTRA) + 'px';
 }
 
 window.addEventListener('resize', function(){
@@ -476,18 +477,6 @@ lockTrayHeight();
 layoutScene();
 window.addEventListener('load', function(){ layoutScene(); lockTrayHeight(); });
 
-function popFeedback(zoneEl, symbol){
-  var pop = document.createElement('div');
-  pop.className = 'feedback-pop';
-  pop.textContent = symbol;
-  var rect = zoneEl.getBoundingClientRect();
-  var wrapRect = sceneWrap.getBoundingClientRect();
-  pop.style.left = (rect.left - wrapRect.left + rect.width/2 - 22) + 'px';
-  pop.style.top = (rect.top - wrapRect.top + rect.height/2 - 22) + 'px';
-  sceneWrap.appendChild(pop);
-  setTimeout(function(){ pop.remove(); }, 750);
-}
-
 function updateProgress(){
   var pg = document.getElementById('progress');
   if(pg) pg.textContent = 'Đúng: ' + correctCount + ' / ' + total;
@@ -508,9 +497,13 @@ function tryPlace(id, zoneEl){
     soundCorrect();
     zoneEl.classList.add('correct-flash');
     setTimeout(function(){ zoneEl.classList.remove('correct-flash'); }, 500);
-    popFeedback(zoneEl, '✅');
     var badge = document.createElement('div');
     badge.className = item.bigBadge ? 'placed-badge big' : 'placed-badge';
+    if(item.spot){                      /* món có chỗ đứng riêng trong ngăn */
+      badge.style.position = 'absolute';
+      badge.style.left = item.spot.left;
+      badge.style.bottom = item.spot.bottom;
+    }
     badge.innerHTML = '<img src="' + iconSrc(item.id) + '" alt="">';
     zoneEl.querySelector('.placed-badges').appendChild(badge);
     if(cardEl) cardEl.remove();
@@ -520,7 +513,6 @@ function tryPlace(id, zoneEl){
     soundWrong();
     zoneEl.classList.add('wrong-flash');
     setTimeout(function(){ zoneEl.classList.remove('wrong-flash'); }, 500);
-    popFeedback(zoneEl, '❌');
     if(cardEl){
       cardEl.classList.add('shake');
       setTimeout(function(){ cardEl.classList.remove('shake'); }, 400);

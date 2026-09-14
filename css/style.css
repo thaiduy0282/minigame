@@ -65,14 +65,10 @@
   .dropzone.wrong-flash{ border-color:var(--coral-deep); background-color:rgba(232,83,71,0.38); }
 
   .placed-badges{ display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-  /* tủ lạnh: dồn đồ sang phải và lên cao để nằm đúng ngăn trên của tủ */
-  .dropzone.fridge .placed-badges{
-    position:absolute; top:9%; left:46%; right:5%; margin-top:0;
-  }
-  /* kệ tủ: đồ đứng trên mặt kệ, không lơ lửng giữa khung */
+  /* tủ lạnh và kệ tủ: mỗi món đứng đúng ngăn riêng (toạ độ ghi trong game.js) */
+  .dropzone.fridge .placed-badges,
   .dropzone.cabinet .placed-badges{
-    position:absolute; bottom:8%; left:6%; right:6%; margin-top:0;
-    align-items:flex-end;
+    position:absolute; inset:0; margin:0; display:block;
   }
   /* kệ gia vị: hạ đồ xuống cho đứng trên mặt kệ dưới */
   .dropzone.spice .placed-badges{
@@ -92,17 +88,6 @@
   .placed-badge.big img{ width:auto; height:100%; }
   .placed-badge img{ width:100%; height:100%; object-fit:contain; display:block; }
 
-  .feedback-pop{
-    position:absolute; font-size:44px; pointer-events:none;
-    animation: popfade .75s ease forwards;
-    filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3));
-  }
-  @keyframes popfade{
-    0%{ opacity:0; transform:translateY(0) scale(0.5); }
-    30%{ opacity:1; transform:translateY(-12px) scale(1.2); }
-    100%{ opacity:0; transform:translateY(-46px) scale(1); }
-  }
-
   /* ---------- Right column: two boxes ---------- */
   .side-col{
     flex:1 1 auto; min-width:330px;
@@ -115,7 +100,7 @@
     padding:14px 14px 12px;
   }
   .box.info{ flex:0 0 auto; margin-bottom:14px; text-align:center; }
-  .box.items{ flex:0 0 auto; min-height:0; display:flex; flex-direction:column; padding-bottom:20px; }
+  .box.items{ flex:0 0 auto; min-height:0; display:flex; flex-direction:column; padding-bottom:30px; }
 
   .game-tag{
     display:inline-block; background:#3E7368; color:var(--white);
@@ -151,7 +136,7 @@
 
   .items-head{
     font-size:20px; font-weight:700; color:var(--teal);
-    text-align:center; flex:0 0 auto; margin-bottom:10px;
+    text-align:center; flex:0 0 auto; margin-bottom:17px;
   }
   .tray{
     flex:1 1 auto; min-height:0; overflow:auto;
@@ -183,7 +168,7 @@
     .game-tag{ font-size:14px; padding:5px 15px; margin-bottom:7px; }
     .progress-pill{ font-size:16.5px; padding:6px 13px; }
     .btn{ font-size:14.5px; padding:6px 11px; }
-    .items-head{ font-size:14.5px; margin-bottom:6px; }
+    .items-head{ font-size:14.5px; margin-bottom:11px; }
     .card{ width:23.5%; min-width:0; border-radius:11px; padding:6px 2px 5px; gap:2px; }
     .card .icon-wrap{ width:48px; height:48px; }
     .card p{ font-size:13px; line-height:1.15; }
@@ -192,7 +177,7 @@
     .rules{ font-size:13px; line-height:1.35; margin-bottom:0; }
     .dropzone .zone-label{ font-size:14px; padding:4px 10px; }
     .box{ padding:11px 11px 9px; }
-    .box.items{ padding-bottom:15px; }
+    .box.items{ padding-bottom:22px; }
     .box.info{ margin-bottom:10px; }
     .spin-box{ margin-top:10px; }
     .start-btn{ font-size:19px; padding:12px 14px; }
