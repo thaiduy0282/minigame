@@ -18,15 +18,15 @@
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone trash" data-cat="trash" style="left:30.5%; top:57%; width:11.5%; height:25.5%;">
-        <span class="zone-label" style="padding:4px 7px;">🗑️ Rác</span>
+        <span class="zone-label" style="padding:4px 7px;">🗑️ Sọt rác</span>
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone cabinet" data-cat="cabinet" style="left:73%; top:15.5%; width:26.5%; height:22.5%;">
-        <span class="zone-label">🗄️ Tủ góc trên</span>
+        <span class="zone-label">🗄️ Kệ tủ</span>
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone spice" data-cat="spice" style="left:81.5%; top:44%; width:14.5%; height:17.5%;">
-        <span class="zone-label" style="padding:4px 7px;">🧂 Gia vị</span>
+        <span class="zone-label" style="padding:4px 7px;">🧂 Kệ gia vị</span>
         <div class="placed-badges"></div>
       </div>
     </div>
@@ -48,14 +48,54 @@
       <div class="items-head">📋 Danh sách đồ cần cất giữ</div>
       <div class="tray" id="tray"></div>
     </div>
+
+    <div class="box spin-box" id="spin-box">
+      <button class="btn start-btn" id="start-btn">
+        <svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.8 4.2v4.6h-4.6"/>
+        </svg>
+        Bắt đầu quay số
+      </button>
+      <div class="turn" id="turn">
+        <div class="turn-avatar"><img id="turn-img" src="" alt=""></div>
+        <div class="turn-text">
+          <div class="turn-label">Xin mời bạn</div>
+          <div class="turn-name" id="turn-name"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box win-box" id="win-box">
+      <div class="win-title">🎉 Tuyệt vời!</div>
+      <div class="win-sub">Cả lớp đã cất giữ đúng hết tất cả!</div>
+      <img class="win-girl" src="images/girl-ok.png" alt="">
+      <div class="summary" id="summary"></div>
+    </div>
   </div>
 </div>
 
-<div class="win-banner" id="win-banner">
-  <p>🎉 Tuyệt vời!<br>Chúng ta đã cất giữ đúng hết tất cả vật phẩm rồi!</p>
-  <button class="btn" onclick="resetGame()">🔀 Chơi lại</button>
+<div class="spin-overlay" id="spin-overlay">
+  <div class="spin-stage">
+    <div class="spin-head" id="spin-head">Xin mời bạn…</div>
+    <div class="spin-photo"><img id="spin-img" src="" alt=""></div>
+    <div class="spin-name" id="spin-name">&nbsp;</div>
+  </div>
 </div>
 
+<div class="result-dialog" id="result-dialog">
+  <div class="result-card">
+    <div class="result-head" id="result-head"></div>
+    <div class="result-body">
+      <div class="result-img"><img id="result-img" src="" alt=""></div>
+      <div class="result-text" id="result-text"></div>
+    </div>
+    <div class="result-bar"><span id="result-bar-fill"></span></div>
+    <img class="result-girl" id="result-girl" src="" alt="">
+  </div>
+</div>
+
+<script src="js/students.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>
