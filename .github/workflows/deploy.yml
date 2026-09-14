@@ -23,7 +23,7 @@ jobs:
       - name: Package site (static files only)
         run: |
           mkdir -p _site
-          cp -r index.html css js images fonts _site/
+          cp -r index.html css js images fonts voice _site/
           touch _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
