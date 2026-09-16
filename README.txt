@@ -21,6 +21,7 @@ CẤU TRÚC
   voice/correct/        Các câu khen khi cất đúng (mp3)
   voice/incorrect/      Các câu nhắc nhở khi cất sai (mp3)
   voice/student/        Giọng gọi tên từng bạn (mp3, tên trùng tên file ảnh)
+  voice/win.mp3         Câu cảm ơn cả lớp, phát ở màn chiến thắng
 
 CÁCH CHƠI CÓ QUAY SỐ
   - Vừa mở game: cô kéo thử vài món cho cả lớp xem. Lúc này chưa quay số.
@@ -57,12 +58,13 @@ MUỐN SỬA NỘI DUNG
     why (câu giải thích hiện trong hộp thoại khi cất đúng).
     cat nhận 1 trong 4 giá trị: fridge, spice, cabinet, trash.
   - Đổi thời gian hộp thoại: sửa số DIALOG_MS trong js/game.js (3000 = 3 giây).
-  - Thêm/bớt câu nói: chép file mp3 vào voice/correct hoặc voice/incorrect,
-    rồi thêm tên file vào VOICE_OK_FILES hoặc VOICE_NO_FILES trong js/game.js.
+  - Câu đọc khi cất đúng: mỗi món một file, đặt tên trùng id của món,
+    ví dụ voice/correct/suachua.mp3. Câu khi cất sai dùng chung các file
+    voice/incorrect/sai1.mp3, sai2.mp3... liệt kê trong VOICE_NO_CHUNG (js/game.js).
     Lưu ý: trình duyệt chỉ phát tiếng sau khi cô bấm chuột lần đầu trong trang.
   - Giọng gọi tên bạn: đặt file theo đúng tên ảnh, ví dụ ảnh IMG_5320.jpg thì
-    file là voice/student/IMG_5320.mp3. Bạn nào chưa có file riêng sẽ dùng tạm
-    file ghi trong VOICE_STUDENT_DEFAULT (hiện là IMG_5318.mp3).
+    file là voice/student/IMG_5320.mp3. Bạn nào chưa có file riêng thì game vẫn
+    quay số và hiện tên bình thường, chỉ không đọc tên bạn đó.
   - Đổi thời gian giữ khuôn mặt to: sửa SPIN_HOLD_MS trong js/game.js (3500 = 3,5 giây).
   - Đổi vị trí/kích thước vùng thả: sửa thuộc tính style (left/top/width/height)
     của các thẻ .dropzone trong index.html.

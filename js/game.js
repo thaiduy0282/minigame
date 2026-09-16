@@ -78,6 +78,12 @@ var items = [
 
 var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Kệ tủ', trash:'Sọt rác'};
 
+/* Mở trang kèm ?test=true thì chỉ giữ lại một món ngẫu nhiên, để chạy thử nhanh
+   trọn luồng chơi (quay số, hộp thoại, màn chiến thắng) mà không phải kéo hết. */
+if(/[?&]test=(true|1)(&|$)/i.test(location.search)){
+  items = [items[Math.floor(Math.random() * items.length)]];
+}
+
 var sceneCol = document.querySelector('.scene-col');
 var BG_W = 1136, BG_H = 939;
 function layoutScene(){
@@ -139,6 +145,7 @@ var spinBox     = document.getElementById('spin-box');
 var turnImg     = document.getElementById('turn-img');
 var turnName    = document.getElementById('turn-name');
 var startBtn    = document.getElementById('start-btn');
+var respinBtn   = document.getElementById('respin-btn');
 
 var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu nhỏ */
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
@@ -225,6 +232,12 @@ function startStudentGame(){
 }
 if(startBtn) startBtn.addEventListener('click', startStudentGame);
 
+/* bạn vừa quay trúng hôm nay vắng: quay lại để mời bạn khác */
+if(respinBtn) respinBtn.addEventListener('click', function(){
+  if(!gameStarted || inputLocked()) return;
+  spinForNextStudent();
+});
+
 function recordResult(ok){
   if(!gameStarted || !currentStudent) return;
   var st = stats[currentStudent.file];
@@ -235,36 +248,71 @@ function recordResult(ok){
 }
 
 /* ============ GIỌNG ĐỌC KHEN / NHẮC NHỞ ============ */
-/* Thêm hoặc bớt câu: chép file mp3 vào voice/correct hoặc voice/incorrect
-   rồi thêm tên file vào đúng danh sách bên dưới. */
-var VOICE_OK_FILES = ['voice/correct/dung1.mp3', 'voice/correct/dung2.mp3',
-                      'voice/correct/dung3.mp3', 'voice/correct/dung4.mp3'];
-var VOICE_NO_FILES = ['voice/incorrect/sai1.mp3', 'voice/incorrect/sai2.mp3',
-                      'voice/incorrect/sai3.mp3', 'voice/incorrect/sai4.mp3'];
+/* Cất đúng: mỗi món một câu riêng, tên file trùng id của món
+     voice/correct/<id>.mp3        (ví dụ voice/correct/suachua.mp3)
+   Cất sai: dùng chung các câu sai1.mp3, sai2.mp3... trong voice/incorrect/,
+   mỗi lượt bốc ngẫu nhiên một câu. Thêm câu mới thì thêm tên file vào danh sách
+   này; file nào chưa có thì game tự bỏ qua. */
+var VOICE_OK_DIR = 'voice/correct/';
+var VOICE_NO_DIR = 'voice/incorrect/';
+var VOICE_NO_CHUNG = [
+  'voice/incorrect/sai1.mp3', 'voice/incorrect/sai2.mp3', 'voice/incorrect/sai3.mp3', 'voice/incorrect/sai4.mp3',
+  'voice/incorrect/sai5.mp3', 'voice/incorrect/sai6.mp3', 'voice/incorrect/sai7.mp3', 'voice/incorrect/sai8.mp3',
+  'voice/incorrect/sai9.mp3'
+];
 var VOICE_DELAY = 300;                /* chờ tiếng chuông ngắn dứt rồi mới đọc */
 
 /* Giọng gọi tên bạn: đặt file theo đúng tên ảnh, ví dụ ảnh IMG_5320.jpg thì
-   file là voice/student/IMG_5320.mp3. Bạn nào chưa có file riêng sẽ dùng tạm
-   file mặc định bên dưới. */
+   file là voice/student/IMG_5320.mp3. Bạn nào chưa có file riêng thì game chỉ
+   hiện tên chứ không đọc, muốn dùng chung một câu thì ghi tên file vào đây. */
+var VOICE_WIN = 'voice/win.mp3';      /* câu cảm ơn cả lớp ở màn chiến thắng */
+var WIN_VOICE_DELAY = 1600;           /* chờ nhạc kèn mừng dứt rồi mới đọc */
 var VOICE_STUDENT_DIR = 'voice/student/';
-var VOICE_STUDENT_DEFAULT = 'IMG_5318.mp3';
+var VOICE_STUDENT_DEFAULT = '';
 
+/* file nào không có sẵn thì loại khỏi danh sách, khỏi phát ra khoảng lặng */
 function loadClips(list){
   var out = [];
   for(var i=0;i<list.length;i++){
-    var a = new Audio(list[i]);
-    a.preload = 'auto';
-    out.push(a);
+    (function(a){
+      a.preload = 'auto';
+      a.addEventListener('error', function(){
+        var j = out.indexOf(a);
+        if(j >= 0) out.splice(j, 1);
+      });
+      out.push(a);
+    })(new Audio(list[i]));
   }
   return out;
 }
-var voiceOk = loadClips(VOICE_OK_FILES);
-var voiceNo = loadClips(VOICE_NO_FILES);
+/* mỗi món một câu, thiếu file thì đánh dấu là không có */
+function loadPerItem(dir){
+  var map = {};
+  for(var i=0;i<items.length;i++){
+    (function(id){
+      var a = new Audio(dir + id + '.mp3');
+      a.preload = 'auto';
+      a.addEventListener('error', function(){ map[id] = null; });
+      map[id] = a;
+    })(items[i].id);
+  }
+  return map;
+}
+var voiceOkItem = loadPerItem(VOICE_OK_DIR);
+var voiceNoItem = loadPerItem(VOICE_NO_DIR);
+var voiceNoChung = loadClips(VOICE_NO_CHUNG);
 
 /* chuẩn bị sẵn giọng gọi tên cho từng bạn */
 var studentClips = {};
-var studentDefaultClip = new Audio(VOICE_STUDENT_DIR + VOICE_STUDENT_DEFAULT);
-studentDefaultClip.preload = 'auto';
+var winClip = new Audio(VOICE_WIN);
+winClip.preload = 'auto';
+winClip.addEventListener('error', function(){ winClip = null; });
+
+var studentDefaultClip = null;
+if(VOICE_STUDENT_DEFAULT){
+  studentDefaultClip = new Audio(VOICE_STUDENT_DIR + VOICE_STUDENT_DEFAULT);
+  studentDefaultClip.preload = 'auto';
+}
 if(typeof students !== 'undefined'){
   for(var vi=0; vi<students.length; vi++){
     (function(base){
@@ -294,16 +342,17 @@ function stopVoice(){
   voiceEndHandler = null;
 }
 
-/* phát ngẫu nhiên một câu, không lặp lại câu vừa đọc. Trả về thời lượng (ms). */
-function playVoice(ok){
-  var list = ok ? voiceOk : voiceNo;
-  if(!list.length) return 0;
-  var last = ok ? lastVoiceOk : lastVoiceNo;
-  var i = Math.floor(Math.random() * list.length);
-  if(list.length > 1 && i === last) i = (i + 1) % list.length;
-  if(ok){ lastVoiceOk = i; } else { lastVoiceNo = i; }
-
-  return startClip(list[i], VOICE_DELAY);
+/* đọc câu của đúng món vừa cất; nếu cất sai mà món chưa có câu riêng
+   thì lấy một câu chung, không lặp lại câu vừa đọc. Trả về thời lượng (ms). */
+function playVoice(ok, item){
+  var clip = item ? (ok ? voiceOkItem : voiceNoItem)[item.id] : null;
+  if(!clip && !ok && voiceNoChung.length){
+    var i = Math.floor(Math.random() * voiceNoChung.length);
+    if(voiceNoChung.length > 1 && i === lastVoiceNo) i = (i + 1) % voiceNoChung.length;
+    lastVoiceNo = i;
+    clip = voiceNoChung[i];
+  }
+  return startClip(clip, VOICE_DELAY);
 }
 
 /* đọc tên bạn vừa quay trúng, lúc khuôn mặt đang hiện to */
@@ -375,7 +424,7 @@ function showResultDialog(item, ok, wrongCat, after){
 
   /* hộp thoại mở ít nhất 3 giây, nếu câu đọc dài hơn thì chờ đọc xong hẳn */
   var openedAt = Date.now();
-  var voiceMs = playVoice(ok);
+  var voiceMs = playVoice(ok, item);
   var hold = Math.max(DIALOG_MS, voiceMs ? voiceMs + 400 : 0);
 
   /* nếu lúc phát chưa biết độ dài file thì căn theo lúc đọc xong */
@@ -397,6 +446,7 @@ function showWin(){
   renderSummary();
   sideCol.classList.add('won');       /* ẩn cột phải, hiện lời chúc mừng */
   soundWin(0.15);
+  startClip(winClip, WIN_VOICE_DELAY);
 }
 
 function renderSummary(){
