@@ -70,7 +70,7 @@ var items = [
 
   {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
-  {id:'chen', label:'Chén', cat:'cabinet', spot:{left:'6%',  bottom:'49%'}, why:'Chén rửa sạch rồi cất vào tủ cho khỏi bám bụi và ruồi đậu.'},
+  {id:'chen', label:'Chén', cat:'cabinet', spot:{left:'6%',  bottom:'49%'}, why:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'},
 
   {id:'racgiay', label:'Giấy bẩn', cat:'trash', why:'Giấy bẩn có nhiều vi khuẩn, phải bỏ ngay vào thùng rác.'},
   {id:'vochuoi', label:'Vỏ chuối', cat:'trash', why:'Vỏ chuối là rác. Để lâu sẽ thu hút ruồi và có mùi hôi.'}
@@ -154,7 +154,8 @@ var spinning = false;       /* đang quay thì khoá khay đồ */
 var currentStudent = null;
 var pool = [];              /* các bạn chưa được mời trong vòng này */
 var lastPicked = -1;
-var stats = {};             /* file ảnh -> {name, ok, no} */
+var stats = {};             /* file ảnh -> {name, ok, no, dung, thuTu} */
+var statOrder = 0;
 
 if(hasStudents){
   for(var si=0; si<students.length; si++){
@@ -242,9 +243,11 @@ function recordResult(ok){
   if(!gameStarted || !currentStudent) return;
   var st = stats[currentStudent.file];
   if(!st){
-    st = stats[currentStudent.file] = {name: currentStudent.name, file: currentStudent.file, ok:0, no:0};
+    st = stats[currentStudent.file] =
+      {name: currentStudent.name, file: currentStudent.file, ok:0, no:0, thuTu: statOrder++};
   }
   if(ok){ st.ok++; } else { st.no++; }
+  st.dung = ok;                        /* kết quả lượt gần nhất của bạn này */
 }
 
 /* ============ GIỌNG ĐỌC KHEN / NHẮC NHỞ ============ */
@@ -455,20 +458,23 @@ function renderSummary(){
   var list = [];
   for(var k in stats){ if(stats.hasOwnProperty(k)) list.push(stats[k]); }
   if(list.length === 0){ box.classList.remove('show'); box.innerHTML = ''; return; }
-  list.sort(function(a,b){ return (b.ok - a.ok) || (a.no - b.no); });
+  list.sort(function(a,b){ return a.thuTu - b.thuTu; });     /* theo thứ tự lên chơi */
   var html = '<div class="summary-title">🏆 Các bạn đã tham gia</div><div class="summary-grid">';
   for(var i=0;i<list.length;i++){
-    html += '<div class="sum-item">' +
-              '<img src="' + STUDENT_DIR + list[i].file + '" alt="">' +
+    var dung = list[i].dung;
+    html += '<div class="sum-item ' + (dung ? 'ok' : 'no') + '">' +
+              '<div class="sum-ava">' +
+                '<img src="' + STUDENT_DIR + list[i].file + '" alt="">' +
+                '<span class="sum-mark">' + (dung ? '✓' : '✗') + '</span>' +
+              '</div>' +
               '<div class="sum-name">' + list[i].name + '</div>' +
-              '<div class="sum-score">✅ ' + list[i].ok + '　❌ ' + list[i].no + '</div>' +
             '</div>';
   }
   box.innerHTML = html + '</div>';
   box.classList.add('show');
   var winBox = document.getElementById('win-box');
   if(winBox){                                  /* nhiều bạn thì thu ảnh bé lại */
-    if(list.length > 12){ winBox.classList.add('many'); }
+    if(list.length > 20){ winBox.classList.add('many'); }   /* quá 4 hàng thì thu nhỏ lại */
     else { winBox.classList.remove('many'); }
   }
 }
@@ -619,6 +625,7 @@ function resetGame(){
   pool = [];
   lastPicked = -1;
   stats = {};
+  statOrder = 0;
   if(spinOverlay){ spinOverlay.classList.remove('show'); spinOverlay.classList.remove('landed'); }
   if(spinBox) spinBox.classList.remove('playing');
   var sum = document.getElementById('summary');
