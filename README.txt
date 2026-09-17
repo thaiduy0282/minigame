@@ -1,5 +1,13 @@
-TRÒ CHƠI: CẤT GIỮ THỰC PHẨM ĐÚNG CÁCH
+TRÒ CHƠI: SIÊU ĐẦU BẾP NHÍ
 Tự nhiên và Xã hội lớp 3 - Bài: Phòng tránh ngộ độc
+
+VỀ DỰ ÁN NÀY
+  Đây là dự án phi lợi nhuận, làm ra chỉ để phục vụ việc giảng dạy trên lớp.
+  Trò chơi được đưa lên mạng công khai trong một khoảng thời gian nhất định
+  để tiện trình chiếu khi dạy học và dự giờ. Sau đợt đó, kho mã nguồn sẽ được
+  chuyển về chế độ riêng tư.
+  Ảnh và tên học sinh trong trò chơi chỉ dùng cho tiết học của lớp, không dùng
+  cho bất kỳ mục đích nào khác.
 
 CÁCH DÙNG
   Giải nén toàn bộ thư mục, mở file index.html bằng Chrome hoặc Edge,
