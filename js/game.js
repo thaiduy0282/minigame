@@ -84,6 +84,10 @@ if(/[?&]test=(true|1)(&|$)/i.test(location.search)){
   items = [items[Math.floor(Math.random() * items.length)]];
 }
 
+/* ?result=true : nhảy thẳng tới màn chiến thắng với 20 bạn, để xem nhanh bố cục
+   bảng tổng kết mà không phải chơi hết ván. */
+var XEM_KET_QUA = /[?&]result=(true|1)(&|$)/i.test(location.search);
+
 var sceneCol = document.querySelector('.scene-col');
 var BG_W = 1136, BG_H = 939;
 function layoutScene(){
@@ -125,6 +129,7 @@ function lockTrayHeight(){
 window.addEventListener('resize', function(){
   layoutScene();
   lockTrayHeight();
+  fitSummary();
 });
 
 var sideCol = document.querySelector('.side-col');
@@ -446,10 +451,38 @@ function showResultDialog(item, ok, wrongCat, after){
 }
 
 function showWin(){
-  renderSummary();
   sideCol.classList.add('won');       /* ẩn cột phải, hiện lời chúc mừng */
+  renderSummary();
+  fitSummary();
   soundWin(0.15);
   startClip(winClip, WIN_VOICE_DELAY);
+}
+
+/* Tự tính cỡ ảnh trong bảng tổng kết theo đúng chỗ trống còn lại, để mọi hàng
+   đều hiện trọn dù màn hình cao thấp khác nhau (có thanh công cụ trình duyệt
+   hay không). Gọi lại mỗi khi đổi cỡ cửa sổ. */
+var SUM_COLS = 5;
+function fitSummary(){
+  if(!sideCol.classList.contains('won')) return;
+  var grid = document.querySelector('.summary-grid');
+  if(!grid) return;
+  var the = grid.querySelectorAll('.sum-item');
+  if(!the.length) return;
+
+  grid.style.removeProperty('--ava');          /* đo lại từ cỡ mặc định */
+  var hang = Math.ceil(the.length / SUM_COLS);
+  var khe = parseFloat(getComputedStyle(grid).rowGap) || 8;
+  /* lấy thẻ "dày" nhất (tên dài xuống 2 dòng) làm chuẩn, kẻo hàng bị hụt */
+  var thua = 0;
+  for(var i=0;i<the.length;i++){
+    var im = the[i].querySelector('img');
+    thua = Math.max(thua, the[i].offsetHeight - im.offsetHeight);
+  }
+  var chocao = (grid.clientHeight - khe * (hang - 1)) / hang;
+  var co = Math.floor(chocao - thua);
+  var toida = parseFloat(getComputedStyle(the[0].querySelector('.sum-ava')).maxWidth) || 74;
+  co = Math.max(22, Math.min(co, toida));
+  grid.style.setProperty('--ava', co + 'px');
 }
 
 function renderSummary(){
@@ -531,7 +564,21 @@ shuffleItems();
 renderTray();
 lockTrayHeight();
 layoutScene();
-window.addEventListener('load', function(){ layoutScene(); lockTrayHeight(); });
+window.addEventListener('load', function(){
+  layoutScene();
+  lockTrayHeight();
+  if(XEM_KET_QUA){                       /* xem trước màn chiến thắng với 20 bạn */
+    gameStarted = true;
+    var n = Math.min(20, students.length);
+    for(var i=0;i<n;i++){
+      currentStudent = students[i];
+      recordResult(i % 4 !== 0);         /* xen kẽ vài bạn cất sai cho giống thật */
+    }
+    currentStudent = null;
+    correctCount = total;
+    showWin();
+  }
+});
 
 function updateProgress(){
   var pg = document.getElementById('progress');

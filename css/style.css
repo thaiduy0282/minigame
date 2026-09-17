@@ -357,13 +357,15 @@
   .summary-grid{
     display:flex; flex-wrap:wrap; gap:8px;
     justify-content:center; align-content:center;
-    overflow:auto; min-height:0; width:100%;
+    overflow:auto; scrollbar-gutter:stable; min-height:0; width:100%;
   }
   .sum-item{
-    width:calc(20% - 7px);            /* 5 thẻ mỗi hàng */
+    width:calc(20% - 10px); min-width:0;  /* 5 thẻ mỗi hàng, chừa cả chỗ thanh cuộn */
     background:var(--mint); border-radius:16px; padding:8px 4px 7px;
   }
-  .sum-ava{ position:relative; width:100%; max-width:74px; margin:0 auto 6px; }
+  .sum-ava{
+    position:relative; width:100%; max-width:74px; margin:0 auto 6px;
+  }
   .sum-item img{
     width:100%; aspect-ratio:1 / 1; border-radius:50%; object-fit:cover; display:block;
     border:4px solid var(--white);
@@ -379,7 +381,7 @@
   .sum-item.no{ background:#FBE2DE; }                 /* nền đỏ nhạt cho bạn cất sai */
   .sum-item.no img{ border-color:var(--coral-deep); }
   .sum-item.no .sum-mark{ background:var(--coral-deep); border-color:#FBE2DE; }
-  .sum-name{ font-size:15px; font-weight:700; color:var(--teal); line-height:1.2; }
+  .sum-name{ font-size:15px; font-weight:700; color:var(--teal); line-height:1.2; overflow-wrap:anywhere; }
 
   /* màn hình thấp: thu nhỏ bảng tổng kết cho khỏi phải cuộn */
   @media (max-height:820px){
@@ -389,8 +391,8 @@
     .turn-name{ font-size:22px; }
     .turn{ gap:12px; }
     .summary-grid{ gap:6px; }
-    .sum-item{ width:74px; padding:4px 2px; border-radius:10px; }
-    .sum-item img{ width:36px; height:36px; border-width:2px; }
+    .sum-item{ padding:4px 2px; border-radius:10px; }
+    .sum-item img{ border-width:2px; }
     .sum-name{ font-size:11px; }
   }
 
@@ -446,3 +448,7 @@
     .win-box.many .sum-name{ font-size:10.5px; }
     .win-box.many .sum-mark{ width:16px; height:16px; font-size:9.5px; }
   }
+
+  /* Cỡ ảnh trong bảng tổng kết do fitSummary() trong js/game.js tính theo chỗ
+     trống thật của màn hình, nên phải đặt cuối để không bị quy tắc nào đè lên. */
+  .summary-grid[style*="--ava"] .sum-ava{ max-width:var(--ava); }
