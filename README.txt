@@ -30,6 +30,9 @@ CẤU TRÚC
   voice/incorrect/      Các câu nhắc nhở khi cất sai (mp3)
   voice/student/        Giọng gọi tên từng bạn (mp3, tên trùng tên file ảnh)
   voice/win.mp3         Câu cảm ơn cả lớp, phát ở màn chiến thắng
+  voice/win-music.mp3   Nhạc mừng, phát trước câu cảm ơn (không bắt buộc)
+  voice/sfx-correct.mp3 Hiệu ứng khi kéo đúng (không bắt buộc)
+  voice/sfx-wrong.wav   Hiệu ứng khi kéo sai (không bắt buộc)
 
 CÁCH CHƠI CÓ QUAY SỐ
   - Vừa mở game: cô kéo thử vài món cho cả lớp xem. Lúc này chưa quay số.

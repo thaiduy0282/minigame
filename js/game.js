@@ -65,7 +65,7 @@ var items = [
   {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, spot:{left:'45%', bottom:'79%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'45%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
-  {id:'nuocmam', label:'Nước mắm', cat:'spice', bigBadge:true, why:'Nước mắm để kệ gia vị, nhớ đậy nắp thật kín.'},
+  {id:'dauan', label:'Dầu ăn', cat:'spice', bigBadge:true, why:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.'},
   {id:'tieu', label:'Hũ tiêu', cat:'spice', why:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.'},
 
   {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
@@ -135,6 +135,7 @@ window.addEventListener('resize', function(){
 var sideCol = document.querySelector('.side-col');
 var winOverlay = document.getElementById('win-overlay');
 var tray = document.getElementById('tray');
+var itemsBox = document.querySelector('.box.items');
 var sceneWrap = document.getElementById('scene-wrap');
 var zones = document.querySelectorAll('.dropzone');
 var selectedCard = null;
@@ -183,8 +184,9 @@ function ketThucLuot(){
   currentStudent = null;
   choBamQuay = true;
   if(spinBox) spinBox.classList.add('cho-quay');
-  if(turnName) turnName.textContent = '';
-  if(turnLabel) turnLabel.textContent = 'Bấm "Quay tiếp" để mời bạn khác';
+  if(itemsBox) itemsBox.classList.add('cho-quay');   /* làm mờ khay cho dễ thấy là đang khoá */
+  if(turnLabel) turnLabel.textContent = 'Hết lượt rồi';
+  if(turnName) turnName.textContent = 'Bấm "Quay tiếp" để mời bạn khác';
 }
 
 function pickStudent(){
@@ -230,6 +232,7 @@ function spinForNextStudent(){
         spinning = false;
         spinBox.classList.add('playing');
         spinBox.classList.remove('cho-quay');
+        if(itemsBox) itemsBox.classList.remove('cho-quay');
         choBamQuay = false;
         turnImg.src = STUDENT_DIR + target.file;
         turnName.textContent = target.name || '';
@@ -284,13 +287,24 @@ var VOICE_NO_CHUNG = [
   'voice/incorrect/sai5.mp3', 'voice/incorrect/sai6.mp3', 'voice/incorrect/sai7.mp3', 'voice/incorrect/sai8.mp3',
   'voice/incorrect/sai9.mp3'
 ];
-var VOICE_DELAY = 300;                /* chờ tiếng chuông ngắn dứt rồi mới đọc */
+var VOICE_DELAY = 300;                /* chờ tiếng chuông tự tạo dứt rồi mới đọc */
+
+/* Hiệu ứng lúc kéo đúng / kéo sai. Thả file vào đúng hai đường dẫn này là game
+   tự dùng; chưa có file thì vẫn dùng tiếng chuông tự tạo như hiện nay. */
+var SFX_DUNG = 'voice/sfx-correct.mp3';
+var SFX_SAI  = 'voice/sfx-wrong.wav';
+var NGHI_SAU_HIEU_UNG = 200;          /* nghỉ giữa hiệu ứng ngắn và lời giải thích */
+var CHEN_KHI_DUNG = 800;              /* kéo đúng: đọc chen vào sau ngần này */
+var CHEN_KHI_SAI  = 900;              /* kéo sai: chờ thêm chút cho tiếng hiệu ứng rõ */
+var treDoc = VOICE_DELAY;             /* chờ bao lâu rồi mới đọc lời giải thích */
 
 /* Giọng gọi tên bạn: đặt file theo đúng tên ảnh, ví dụ ảnh IMG_5320.jpg thì
    file là voice/student/IMG_5320.mp3. Bạn nào chưa có file riêng thì game chỉ
    hiện tên chứ không đọc, muốn dùng chung một câu thì ghi tên file vào đây. */
 var VOICE_WIN = 'voice/win.mp3';      /* câu cảm ơn cả lớp ở màn chiến thắng */
-var WIN_VOICE_DELAY = 1600;           /* chờ nhạc kèn mừng dứt rồi mới đọc */
+var NHAC_THANG = 'voice/win-music.mp3';   /* nhạc mừng phát trước câu cảm ơn */
+var WIN_VOICE_DELAY = 1600;           /* chờ nhạc kèn tự tạo dứt rồi mới đọc */
+var NGHI_SAU_NHAC = 400;              /* nghỉ giữa nhạc và câu cảm ơn */
 var VOICE_STUDENT_DIR = 'voice/student/';
 var VOICE_STUDENT_DEFAULT = '';
 
@@ -322,6 +336,36 @@ function loadPerItem(dir){
   }
   return map;
 }
+var sfxDung = new Audio(SFX_DUNG);
+sfxDung.preload = 'auto';
+sfxDung.addEventListener('error', function(){ sfxDung = null; });
+var sfxSai = new Audio(SFX_SAI);
+sfxSai.preload = 'auto';
+sfxSai.addEventListener('error', function(){ sfxSai = null; });
+
+/* phát hiệu ứng đúng/sai, đồng thời tính xem bao lâu nữa thì đọc lời giải thích */
+function phatHieuUng(ok){
+  var sfx = ok ? sfxDung : sfxSai;
+  if(!sfx){
+    if(ok){ soundCorrect(); } else { soundWrong(); }
+    treDoc = VOICE_DELAY;
+    return;
+  }
+  try{ sfx.currentTime = 0; }catch(err){}
+  var p = sfx.play();
+  if(p && p.catch) p.catch(function(){});
+  var dai = (sfx.duration && isFinite(sfx.duration)) ? sfx.duration * 1000 : 0;
+  /* hiệu ứng ngắn thì chờ hết rồi đọc; hiệu ứng dài thì đọc chen vào cho đỡ lâu */
+  var moc = ok ? CHEN_KHI_DUNG : CHEN_KHI_SAI;
+  treDoc = dai ? Math.min(moc, dai + NGHI_SAU_HIEU_UNG) : VOICE_DELAY;
+}
+
+function dungHieuUng(){
+  [sfxDung, sfxSai].forEach(function(a){
+    if(a){ try{ a.pause(); a.currentTime = 0; }catch(err){} }
+  });
+}
+
 var voiceOkItem = loadPerItem(VOICE_OK_DIR);
 var voiceNoItem = loadPerItem(VOICE_NO_DIR);
 var voiceNoChung = loadClips(VOICE_NO_CHUNG);
@@ -331,6 +375,37 @@ var studentClips = {};
 var winClip = new Audio(VOICE_WIN);
 winClip.preload = 'auto';
 winClip.addEventListener('error', function(){ winClip = null; });
+
+/* Nhạc mừng: nếu có file voice/nhac-thang.mp3 thì phát file đó rồi mới đọc câu
+   cảm ơn; không có file thì dùng tiếng kèn tự tạo như trước. */
+var winMusic = new Audio(NHAC_THANG);
+winMusic.preload = 'auto';
+winMusic.addEventListener('error', function(){ winMusic = null; });
+
+function dungNhacThang(){
+  if(winMusic){
+    try{ winMusic.pause(); winMusic.currentTime = 0; }catch(err){}
+    winMusic.onended = null;
+  }
+}
+
+function phatMungChienThang(){
+  if(!winMusic){                       /* chưa có file nhạc: kèn tự tạo như cũ */
+    soundWin(0.15);
+    startClip(winClip, WIN_VOICE_DELAY);
+    return;
+  }
+  dungNhacThang();
+  try{ winMusic.currentTime = 0; }catch(err){}
+  var p = winMusic.play();
+  if(p && p.catch) p.catch(function(){});
+  var dai = (winMusic.duration && isFinite(winMusic.duration)) ? winMusic.duration * 1000 : 0;
+  if(dai){
+    startClip(winClip, dai + NGHI_SAU_NHAC);
+  } else {                             /* chưa biết độ dài thì chờ nhạc dứt */
+    winMusic.onended = function(){ startClip(winClip, NGHI_SAU_NHAC); };
+  }
+}
 
 var studentDefaultClip = null;
 if(VOICE_STUDENT_DEFAULT){
@@ -376,7 +451,7 @@ function playVoice(ok, item){
     lastVoiceNo = i;
     clip = voiceNoChung[i];
   }
-  return startClip(clip, VOICE_DELAY);
+  return startClip(clip, treDoc);
 }
 
 /* đọc tên bạn vừa quay trúng, lúc khuôn mặt đang hiện to */
@@ -470,8 +545,7 @@ function showWin(){
   winOverlay.classList.add('show');   /* hộp mừng phủ kín màn hình */
   renderSummary();
   fitSummary();
-  soundWin(0.15);
-  startClip(winClip, WIN_VOICE_DELAY);
+  phatMungChienThang();
 }
 
 /* Tự tính cỡ ảnh trong bảng tổng kết theo đúng chỗ trống còn lại, để mọi hàng
@@ -594,6 +668,16 @@ window.addEventListener('load', function(){
     currentStudent = null;
     correctCount = total;
     showWin();
+    /* Trình duyệt chặn phát tiếng khi trang chưa được bấm lần nào, mà ở chế độ
+       xem trước thì màn thắng hiện ngay. Bấm chuột một cái là nghe lại từ đầu. */
+    var ngheLai = function(){
+      document.removeEventListener('click', ngheLai);
+      document.removeEventListener('keydown', ngheLai);
+      getCtx();
+      phatMungChienThang();
+    };
+    document.addEventListener('click', ngheLai);
+    document.addEventListener('keydown', ngheLai);
   }
 });
 
@@ -613,8 +697,8 @@ function tryPlace(id, zoneEl){
   /* ghi kết quả TRƯỚC khi cất món, để lượt cuối cùng kịp vào bảng tổng kết */
   recordResult(ok);
 
+  phatHieuUng(ok);
   if(ok){
-    soundCorrect();
     zoneEl.classList.add('correct-flash');
     setTimeout(function(){ zoneEl.classList.remove('correct-flash'); }, 500);
     var badge = document.createElement('div');
@@ -630,7 +714,6 @@ function tryPlace(id, zoneEl){
     correctCount++;
     updateProgress();
   } else {
-    soundWrong();
     zoneEl.classList.add('wrong-flash');
     setTimeout(function(){ zoneEl.classList.remove('wrong-flash'); }, 500);
     if(cardEl){
@@ -680,6 +763,8 @@ function resetGame(){
   /* về lại trạng thái đầu: hiện nút "Bắt đầu", xoá thống kê */
   if(dialogTimer) clearTimeout(dialogTimer);
   stopVoice();
+  dungHieuUng();
+  dungNhacThang();
   dialogAfter = null;
   dialogOpen = false;
   if(dialogEl) dialogEl.classList.remove('show');
@@ -687,6 +772,7 @@ function resetGame(){
   spinning = false;
   choBamQuay = false;
   if(spinBox) spinBox.classList.remove('cho-quay');
+  if(itemsBox) itemsBox.classList.remove('cho-quay');
   if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
   currentStudent = null;
   pool = [];

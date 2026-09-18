@@ -105,6 +105,10 @@
   }
   .box.info{ flex:0 0 auto; margin-bottom:14px; text-align:center; }
   .box.items{ flex:0 0 auto; min-height:0; display:flex; flex-direction:column; padding-bottom:30px; }
+  /* đang chờ cô bấm "Quay tiếp": làm mờ khay để thấy rõ là chưa kéo được */
+  .box.items.cho-quay{ opacity:0.45; }
+  .box.items.cho-quay .card{ cursor:default; }
+  .spin-box.cho-quay .turn-name{ font-size:22px; color:var(--coral-deep); }
 
   .game-tag{
     display:inline-block; background:#3E7368; color:var(--white);
@@ -204,7 +208,7 @@
     .result-img{ width:88px; height:88px; padding:7px; border-radius:15px; }
     .result-text{ font-size:18px; max-width:330px; }
     .result-bar{ margin:14px -118px 0 -22px; height:7px; border-radius:0 0 20px 20px; }
-    .summary-title{ font-size:21px; margin-bottom:8px; }
+    .summary-title{ font-size:25px; margin-bottom:8px; }
     .summary{ margin-bottom:11px; }
     .sum-item{ padding:6px 3px; border-radius:13px; }
     .sum-ava{ max-width:56px; margin-bottom:5px; }
@@ -212,7 +216,7 @@
 
     .sum-name{ font-size:19px; }
     .win-title{ font-size:28px; }
-    .win-sub{ font-size:16px; }
+    .win-sub{ font-size:19px; }
     .win-replay{ font-size:16px; padding:9px 18px; margin-top:7px; }
   }
 
@@ -282,17 +286,7 @@
     font-size:42px; font-weight:800; color:var(--white);
     margin-top:18px; min-height:1.2em; text-shadow:0 3px 10px rgba(0,0,0,0.35);
   }
-  .spin-overlay.landed .spin-photo{ animation:land .55s ease; border-color:var(--sun); }
-  .spin-overlay.landed .spin-name{ animation:namein .45s ease; }
-  @keyframes land{
-    0%{ transform:scale(1); }
-    45%{ transform:scale(1.13); }
-    100%{ transform:scale(1); }
-  }
-  @keyframes namein{
-    0%{ opacity:0; transform:translateY(12px); }
-    100%{ opacity:1; transform:translateY(0); }
-  }
+  .spin-overlay.landed .spin-photo{ border-color:var(--sun); }
 
   /* ---------- Hộp thoại đúng / sai ---------- */
   .result-dialog{
@@ -305,7 +299,6 @@
     padding:24px 152px 0 30px;                 /* chừa chỗ bên phải cho bạn nhỏ */
     box-shadow:0 20px 50px rgba(0,0,0,0.35); text-align:center;
     max-width:74vw; border-top:10px solid transparent;
-    animation:dialogin .28s ease;
   }
   /* bạn nhỏ đứng nhô ra ngoài mép hộp thoại cho sinh động */
   /* bạn cười rộng hơn bạn buồn nên đẩy ra ngoài nhiều hơn, để hai bên hở đều nhau */
@@ -317,11 +310,6 @@
     position:absolute; right:-22px; bottom:-12px;
     height:152%; max-height:62vh; width:auto; pointer-events:none;
     filter:drop-shadow(0 8px 16px rgba(27,75,67,0.28));
-    animation:girlin .42s cubic-bezier(.2,.9,.3,1.2) both;
-  }
-  @keyframes girlin{
-    from{ opacity:0; transform:translate(26px, 16px) scale(0.9); }
-    to{ opacity:1; transform:none; }
   }
   .result-dialog.ok .result-card{ border-top-color:#3FAE6A; }
   .result-dialog.no .result-card{ border-top-color:var(--coral-deep); }
@@ -347,22 +335,18 @@
     animation:countdown 3s linear forwards;
   }
   @keyframes countdown{ from{ width:100%; } to{ width:0; } }
-  @keyframes dialogin{
-    from{ opacity:0; transform:scale(0.9) translateY(12px); }
-    to{ opacity:1; transform:none; }
-  }
 
   /* ---------- Bảng tổng kết ---------- */
   .summary{ display:none; margin:0; width:100%; min-height:0; flex:1 1 auto; }
   .summary.show{ display:flex; flex-direction:column; min-height:0; }
-  .summary-title{ font-size:30px; font-weight:800; color:var(--teal); margin-bottom:10px; text-align:center; }
+  .summary-title{ font-size:36px; font-weight:800; color:var(--teal); margin-bottom:10px; text-align:center; }
   .summary-grid{
-    display:flex; flex-wrap:wrap; gap:16px;
+    display:flex; flex-wrap:wrap; gap:11px;
     justify-content:center; align-content:center;
     overflow:auto; scrollbar-gutter:stable; min-height:0; width:100%;
   }
   .sum-item{
-    width:calc(100% / var(--cols, 5) - 18px); min-width:0;   /* số thẻ mỗi hàng do game tính */
+    width:calc(100% / var(--cols, 5) - 13px); min-width:0;   /* số thẻ mỗi hàng do game tính */
     text-align:center;
     background:var(--mint); border-radius:16px; padding:8px 4px 7px;
     box-shadow:0 3px 10px rgba(27,75,67,0.10);
@@ -397,7 +381,7 @@
     .turn-label{ font-size:14px; }
     .turn-name{ font-size:22px; }
     .turn{ gap:12px; }
-    .summary-grid{ gap:11px; }
+    .summary-grid{ gap:8px; }
     .sum-item{ padding:6px 3px; border-radius:12px; }
     .sum-item img{ border-width:3px; }
     .sum-name{ font-size:18px; }
@@ -419,19 +403,15 @@
   }
   .win-box{
     display:flex; flex-direction:row; align-items:stretch; gap:26px;
-    min-height:0; animation:winin .45s ease both;
+    min-height:0;
   }
   .win-left{
     flex:0 0 25%; min-width:0; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center; gap:8px;
   }
   .win-right{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; justify-content:center; }
-  @keyframes winin{
-    from{ opacity:0; transform:translateY(18px); }
-    to{ opacity:1; transform:none; }
-  }
   .win-title{ font-size:38px; font-weight:800; color:var(--teal); line-height:1.2; }
-  .win-sub{ font-size:20px; font-weight:700; color:var(--teal-soft); line-height:1.35; }
+  .win-sub{ font-size:24px; font-weight:700; color:var(--teal-soft); line-height:1.35; }
   .win-girl{
     flex:0 1 auto; min-height:80px; max-height:70%; width:auto; max-width:100%;
     object-fit:contain; filter:drop-shadow(0 8px 16px rgba(27,75,67,0.25));
