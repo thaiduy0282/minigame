@@ -133,6 +133,7 @@ window.addEventListener('resize', function(){
 });
 
 var sideCol = document.querySelector('.side-col');
+var winOverlay = document.getElementById('win-overlay');
 var tray = document.getElementById('tray');
 var sceneWrap = document.getElementById('scene-wrap');
 var zones = document.querySelectorAll('.dropzone');
@@ -149,6 +150,7 @@ var spinHead    = document.getElementById('spin-head');
 var spinBox     = document.getElementById('spin-box');
 var turnImg     = document.getElementById('turn-img');
 var turnName    = document.getElementById('turn-name');
+var turnLabel   = document.querySelector('.turn-label');
 var startBtn    = document.getElementById('start-btn');
 var respinBtn   = document.getElementById('respin-btn');
 
@@ -156,6 +158,7 @@ var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
 var gameStarted = false;    /* đã bấm "Bắt đầu" chưa - trước đó cô chơi thử tự do */
 var spinning = false;       /* đang quay thì khoá khay đồ */
+var choBamQuay = false;     /* hết lượt, đang chờ cô bấm "Quay tiếp" */
 var currentStudent = null;
 var pool = [];              /* các bạn chưa được mời trong vòng này */
 var lastPicked = -1;
@@ -171,7 +174,17 @@ if(hasStudents){
 }
 
 function inputLocked(){
-  return spinning || dialogOpen;
+  return spinning || dialogOpen || choBamQuay;
+}
+
+/* Hết lượt của một bạn: khoá khay và chờ cô bấm "Quay tiếp".
+   Làm vậy để cô chủ động nhịp lớp, không bị game tự chạy tiếp. */
+function ketThucLuot(){
+  currentStudent = null;
+  choBamQuay = true;
+  if(spinBox) spinBox.classList.add('cho-quay');
+  if(turnName) turnName.textContent = '';
+  if(turnLabel) turnLabel.textContent = 'Bấm "Quay tiếp" để mời bạn khác';
 }
 
 function pickStudent(){
@@ -216,8 +229,11 @@ function spinForNextStudent(){
         spinOverlay.classList.remove('show');
         spinning = false;
         spinBox.classList.add('playing');
+        spinBox.classList.remove('cho-quay');
+        choBamQuay = false;
         turnImg.src = STUDENT_DIR + target.file;
         turnName.textContent = target.name || '';
+        if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
       }, SPIN_HOLD_MS);
       return;
     }
@@ -240,7 +256,7 @@ if(startBtn) startBtn.addEventListener('click', startStudentGame);
 
 /* bạn vừa quay trúng hôm nay vắng: quay lại để mời bạn khác */
 if(respinBtn) respinBtn.addEventListener('click', function(){
-  if(!gameStarted || inputLocked()) return;
+  if(!gameStarted || spinning || dialogOpen) return;
   spinForNextStudent();
 });
 
@@ -451,7 +467,7 @@ function showResultDialog(item, ok, wrongCat, after){
 }
 
 function showWin(){
-  sideCol.classList.add('won');       /* ẩn cột phải, hiện lời chúc mừng */
+  winOverlay.classList.add('show');   /* hộp mừng phủ kín màn hình */
   renderSummary();
   fitSummary();
   soundWin(0.15);
@@ -461,16 +477,20 @@ function showWin(){
 /* Tự tính cỡ ảnh trong bảng tổng kết theo đúng chỗ trống còn lại, để mọi hàng
    đều hiện trọn dù màn hình cao thấp khác nhau (có thanh công cụ trình duyệt
    hay không). Gọi lại mỗi khi đổi cỡ cửa sổ. */
-var SUM_COLS = 5;
+/* chọn số thẻ mỗi hàng sao cho bảng không quá 4 hàng, ảnh mỗi bạn to nhất có thể */
+var SUM_HANG_TOI_DA = 4;
+function soCot(n){
+  return Math.max(4, Math.min(8, Math.ceil(n / SUM_HANG_TOI_DA)));
+}
 function fitSummary(){
-  if(!sideCol.classList.contains('won')) return;
+  if(!winOverlay.classList.contains('show')) return;
   var grid = document.querySelector('.summary-grid');
   if(!grid) return;
   var the = grid.querySelectorAll('.sum-item');
   if(!the.length) return;
 
   grid.style.removeProperty('--ava');          /* đo lại từ cỡ mặc định */
-  var hang = Math.ceil(the.length / SUM_COLS);
+  var hang = Math.ceil(the.length / soCot(the.length));
   var khe = parseFloat(getComputedStyle(grid).rowGap) || 8;
   /* lấy thẻ "dày" nhất (tên dài xuống 2 dòng) làm chuẩn, kẻo hàng bị hụt */
   var thua = 0;
@@ -492,7 +512,8 @@ function renderSummary(){
   for(var k in stats){ if(stats.hasOwnProperty(k)) list.push(stats[k]); }
   if(list.length === 0){ box.classList.remove('show'); box.innerHTML = ''; return; }
   list.sort(function(a,b){ return a.thuTu - b.thuTu; });     /* theo thứ tự lên chơi */
-  var html = '<div class="summary-title">🏆 Các bạn đã tham gia</div><div class="summary-grid">';
+  var html = '<div class="summary-title">🏆 Các bạn đã tham gia</div>' +
+             '<div class="summary-grid" style="--cols:' + soCot(list.length) + '">';
   for(var i=0;i<list.length;i++){
     var dung = list[i].dung;
     html += '<div class="sum-item ' + (dung ? 'ok' : 'no') + '">' +
@@ -505,11 +526,7 @@ function renderSummary(){
   }
   box.innerHTML = html + '</div>';
   box.classList.add('show');
-  var winBox = document.getElementById('win-box');
-  if(winBox){                                  /* nhiều bạn thì thu ảnh bé lại */
-    if(list.length > 20){ winBox.classList.add('many'); }   /* quá 4 hàng thì thu nhỏ lại */
-    else { winBox.classList.remove('many'); }
-  }
+
 }
 
 function findItem(id){
@@ -626,7 +643,7 @@ function tryPlace(id, zoneEl){
   /* hiện hộp thoại giải thích, tắt xong mới quay mời bạn tiếp theo */
   showResultDialog(item, ok, cat, function(){
     if(correctCount >= total){ showWin(); return; }
-    if(gameStarted) spinForNextStudent();    /* tắt hộp thoại là quay ngay */
+    if(gameStarted) ketThucLuot();           /* chờ cô bấm "Quay tiếp" mới mời bạn khác */
   });
 }
 
@@ -658,7 +675,7 @@ function resetGame(){
   correctCount = 0;
   selectedCard = null;
   updateProgress();
-  sideCol.classList.remove('won');
+  winOverlay.classList.remove('show');
 
   /* về lại trạng thái đầu: hiện nút "Bắt đầu", xoá thống kê */
   if(dialogTimer) clearTimeout(dialogTimer);
@@ -668,6 +685,9 @@ function resetGame(){
   if(dialogEl) dialogEl.classList.remove('show');
   gameStarted = false;
   spinning = false;
+  choBamQuay = false;
+  if(spinBox) spinBox.classList.remove('cho-quay');
+  if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
   currentStudent = null;
   pool = [];
   lastPicked = -1;

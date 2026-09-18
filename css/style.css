@@ -43,12 +43,16 @@
 
   .dropzone{
     position:absolute; border-radius:14px; border:3px dashed rgba(255,255,255,0.95);
-    padding:6px; overflow:hidden;
+    padding:6px;
   }
+  /* chỉ cắt phần đồ đã cất, còn nhãn được phép nhô ra ngoài cho khỏi bị che */
+  .placed-badges{ overflow:hidden; }
+  /* sọt rác hẹp nên đẩy nhãn sang trái cho nằm gọn trên thùng rác */
+  .dropzone.trash .zone-label{ margin-left:-16%; }
   .dropzone .zone-label{
     display:inline-block;
-    font-weight:800; font-size:19px; color:var(--white);
-    padding:5px 14px; border-radius:999px; white-space:nowrap;
+    font-weight:800; font-size:29px; color:var(--white);
+    padding:7px 20px; border-radius:999px; white-space:nowrap;
     box-shadow:0 2px 6px rgba(0,0,0,0.22);
   }
   .dropzone.fridge{ background:rgba(94,169,196,0.13); }
@@ -175,7 +179,7 @@
     .tray{ gap:6px; }
     .rules-title{ font-size:14.5px; margin-bottom:3px; }
     .rules{ font-size:13px; line-height:1.35; margin-bottom:0; }
-    .dropzone .zone-label{ font-size:14px; padding:4px 10px; }
+    .dropzone .zone-label{ font-size:21px; padding:6px 14px; }
     .box{ padding:11px 11px 9px; }
     .box.items{ padding-bottom:22px; }
     .box.info{ margin-bottom:10px; }
@@ -200,17 +204,15 @@
     .result-img{ width:88px; height:88px; padding:7px; border-radius:15px; }
     .result-text{ font-size:18px; max-width:330px; }
     .result-bar{ margin:14px -118px 0 -22px; height:7px; border-radius:0 0 20px 20px; }
-    .summary-title{ font-size:15.5px; margin-bottom:7px; }
+    .summary-title{ font-size:21px; margin-bottom:8px; }
     .summary{ margin-bottom:11px; }
     .sum-item{ padding:6px 3px; border-radius:13px; }
     .sum-ava{ max-width:56px; margin-bottom:5px; }
     .sum-item img{ border-width:3px; }
-    .sum-mark{ width:21px; height:21px; font-size:11.5px; border-width:2px; }
-    .sum-name{ font-size:11.5px; }
-    .win-title{ font-size:23px; }
-    .win-sub{ font-size:14px; margin-top:3px; }
-    .win-girl{ height:clamp(70px, 11vh, 120px); }
-    .win-head{ gap:10px; }
+
+    .sum-name{ font-size:19px; }
+    .win-title{ font-size:28px; }
+    .win-sub{ font-size:16px; }
     .win-replay{ font-size:16px; padding:9px 18px; margin-top:7px; }
   }
 
@@ -270,7 +272,7 @@
     text-shadow:0 3px 10px rgba(0,0,0,0.35);
   }
   .spin-photo{
-    width:46vh; height:46vh; max-width:74vw; max-height:74vw; margin:0 auto;
+    width:66vh; height:66vh; max-width:86vw; max-height:86vw; margin:0 auto;
     border-radius:50%; overflow:hidden; background:var(--white);
     border:10px solid var(--white); box-shadow:0 18px 44px rgba(0,0,0,0.45);
     transition:border-color .25s ease;
@@ -351,37 +353,42 @@
   }
 
   /* ---------- Bảng tổng kết ---------- */
-  .summary{ display:none; margin:6px 0 0; width:100%; min-height:0; flex:1 1 auto; }
+  .summary{ display:none; margin:0; width:100%; min-height:0; flex:1 1 auto; }
   .summary.show{ display:flex; flex-direction:column; min-height:0; }
-  .summary-title{ font-size:20px; font-weight:800; color:var(--teal); margin-bottom:6px; }
+  .summary-title{ font-size:30px; font-weight:800; color:var(--teal); margin-bottom:10px; text-align:center; }
   .summary-grid{
-    display:flex; flex-wrap:wrap; gap:8px;
+    display:flex; flex-wrap:wrap; gap:16px;
     justify-content:center; align-content:center;
     overflow:auto; scrollbar-gutter:stable; min-height:0; width:100%;
   }
   .sum-item{
-    width:calc(20% - 10px); min-width:0;  /* 5 thẻ mỗi hàng, chừa cả chỗ thanh cuộn */
+    width:calc(100% / var(--cols, 5) - 18px); min-width:0;   /* số thẻ mỗi hàng do game tính */
+    text-align:center;
     background:var(--mint); border-radius:16px; padding:8px 4px 7px;
+    box-shadow:0 3px 10px rgba(27,75,67,0.10);
   }
   .sum-ava{
-    position:relative; width:100%; max-width:74px; margin:0 auto 6px;
+    position:relative; width:100%; max-width:170px; margin:0 auto 7px;
   }
   .sum-item img{
     width:100%; aspect-ratio:1 / 1; border-radius:50%; object-fit:cover; display:block;
     border:4px solid var(--white);
   }
+  /* dấu đúng/sai to theo cỡ ảnh, nằm đè lên viền tròn của ảnh */
   .sum-mark{
-    position:absolute; right:-3px; bottom:-3px;
-    width:27px; height:27px; border-radius:50%; border:3px solid var(--mint);
-    color:var(--white); font-size:15px; font-weight:800; line-height:1;
+    position:absolute; right:1%; bottom:1%;
+    width:calc(var(--ava, 74px) * 0.30); height:calc(var(--ava, 74px) * 0.30);
+    border-radius:50%; border:3px solid var(--mint);
+    color:var(--white); font-size:calc(var(--ava, 74px) * 0.17); font-weight:800; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
   .sum-item.ok img{ border-color:#3FAE6A; }
+  .sum-item img{ border-color:var(--white); }
   .sum-item.ok .sum-mark{ background:#3FAE6A; }
-  .sum-item.no{ background:#FBE2DE; }                 /* nền đỏ nhạt cho bạn cất sai */
+  .sum-item.no{ background:#FBD5CE; }                 /* nền đỏ nhạt cho bạn cất sai */
   .sum-item.no img{ border-color:var(--coral-deep); }
-  .sum-item.no .sum-mark{ background:var(--coral-deep); border-color:#FBE2DE; }
-  .sum-name{ font-size:15px; font-weight:700; color:var(--teal); line-height:1.2; overflow-wrap:anywhere; }
+  .sum-item.no .sum-mark{ background:var(--coral-deep); border-color:#FBD5CE; }
+  .sum-name{ font-size:25px; font-weight:700; color:var(--teal); line-height:1.2; overflow-wrap:anywhere; }
 
   /* màn hình thấp: thu nhỏ bảng tổng kết cho khỏi phải cuộn */
   @media (max-height:820px){
@@ -390,63 +397,55 @@
     .turn-label{ font-size:14px; }
     .turn-name{ font-size:22px; }
     .turn{ gap:12px; }
-    .summary-grid{ gap:6px; }
-    .sum-item{ padding:4px 2px; border-radius:10px; }
-    .sum-item img{ border-width:2px; }
-    .sum-name{ font-size:11px; }
+    .summary-grid{ gap:11px; }
+    .sum-item{ padding:6px 3px; border-radius:12px; }
+    .sum-item img{ border-width:3px; }
+    .sum-name{ font-size:18px; }
+
   }
 
-  /* ---------- Hộp mừng chiến thắng (thế chỗ cột phải) ---------- */
-  .win-box{
-    display:none; flex:1 1 auto; min-height:0;
-    flex-direction:column; align-items:center; justify-content:center; text-align:center;
-    animation:winin .45s ease both;
+  /* ---------- Màn chiến thắng: phủ kín màn hình ---------- */
+  .win-overlay{
+    display:none; position:fixed; inset:0; z-index:80;
+    background:rgba(27,75,67,0.74);
+    align-items:center; justify-content:center; padding:3vh 3vw;
   }
-  /* chỉ giấu khay đồ và ô quay số, vẫn giữ tên trò chơi và luật chơi */
-  .side-col.won .box.items,
-  .side-col.won .spin-box{ display:none; }
-  .side-col.won .win-box{ display:flex; }
+  .win-overlay.show{ display:flex; }
+  .win-card{
+    width:100%; max-width:1560px; height:94vh;
+    background:var(--white);
+    border-radius:28px; padding:24px 30px;
+    box-shadow:0 26px 60px rgba(0,0,0,0.42);
+  }
+  .win-box{
+    display:flex; flex-direction:row; align-items:stretch; gap:26px;
+    min-height:0; animation:winin .45s ease both;
+  }
+  .win-left{
+    flex:0 0 25%; min-width:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; gap:8px;
+  }
+  .win-right{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; justify-content:center; }
   @keyframes winin{
     from{ opacity:0; transform:translateY(18px); }
     to{ opacity:1; transform:none; }
   }
-  /* hàng tiêu đề: bạn nhỏ đứng cạnh lời chúc, nhường chỗ cho bảng tên bên dưới */
-  .win-head{
-    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
-    gap:14px; width:100%; margin-bottom:4px;
-  }
-  .win-words{ text-align:left; }
-  .win-title{ font-size:32px; font-weight:800; color:var(--teal); line-height:1.2; }
-  .win-sub{ font-size:18px; font-weight:700; color:var(--teal-soft); margin-top:4px; }
+  .win-title{ font-size:38px; font-weight:800; color:var(--teal); line-height:1.2; }
+  .win-sub{ font-size:20px; font-weight:700; color:var(--teal-soft); line-height:1.35; }
   .win-girl{
-    flex:0 0 auto; height:clamp(100px, 15.5vh, 190px); width:auto; object-fit:contain;
-    filter:drop-shadow(0 8px 16px rgba(27,75,67,0.25));
+    flex:0 1 auto; min-height:80px; max-height:70%; width:auto; max-width:100%;
+    object-fit:contain; filter:drop-shadow(0 8px 16px rgba(27,75,67,0.25));
   }
-  .win-replay{ flex:0 0 auto; margin-top:8px; font-size:22px; padding:12px 26px; }
+  .win-replay{
+    flex:0 0 auto; margin-top:auto; font-size:23px; padding:13px 30px;
+    background:var(--coral); color:var(--white); box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .win-replay:hover{ background:var(--coral-deep); }
   /* lớp đông thì thu thẻ và ảnh bé lại cho đủ chỗ */
-  .win-box.many .sum-item{ padding:7px 3px 6px; }
-  .win-box.many .sum-ava{ max-width:58px; margin-bottom:5px; }
-  .win-box.many .sum-item img{ border-width:3px; }
-  .win-box.many .sum-mark{ width:22px; height:22px; font-size:12px; border-width:2px; }
-  .win-box.many .sum-name{ font-size:13px; }
-  .win-box.many .win-girl{ height:clamp(90px, 12vh, 150px); }
 
   @media (max-height:820px){
-    .win-box .sum-item{ padding:4px 3px 3px; border-radius:11px; }
-    .win-box .sum-ava{ max-width:46px; margin-bottom:3px; }
-    .win-box .sum-item img{ border-width:3px; }
-    .win-box .sum-mark{ width:18px; height:18px; font-size:10.5px; border-width:2px; }
-    .win-box .sum-name{ font-size:11px; line-height:1.15; }
-    .win-box .summary-title{ font-size:12.5px; margin-bottom:4px; }
-    .win-box .win-girl{ height:clamp(58px, 8.5vh, 100px); }
-    .win-box .win-head{ margin-bottom:2px; }
-    .win-box .summary-grid{ gap:6px; }
     /* màn thấp mà lớp lại đông: thu thêm cho đủ 5 hàng, khỏi phải cuộn */
-    .win-box.many .win-girl{ height:clamp(50px, 7.5vh, 88px); }
-    .win-box.many .sum-item{ padding:3px 2px 2px; }
-    .win-box.many .sum-ava{ max-width:42px; margin-bottom:2px; }
-    .win-box.many .sum-name{ font-size:10.5px; }
-    .win-box.many .sum-mark{ width:16px; height:16px; font-size:9.5px; }
   }
 
   /* Cỡ ảnh trong bảng tổng kết do fitSummary() trong js/game.js tính theo chỗ

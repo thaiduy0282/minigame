@@ -14,19 +14,19 @@
       <img class="bg" src="images/kitchen.jpg" alt="Nhà bếp">
 
       <div class="dropzone fridge" data-cat="fridge" style="left:3%; top:35.5%; width:28%; height:46.5%;">
-        <span class="zone-label">🧊 Tủ lạnh</span>
+        <span class="zone-label">Tủ lạnh</span>
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone trash" data-cat="trash" style="left:30.5%; top:57%; width:11.5%; height:25.5%;">
-        <span class="zone-label" style="padding:4px 7px;">🗑️ Sọt rác</span>
+        <span class="zone-label">Sọt rác</span>
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone cabinet" data-cat="cabinet" style="left:73%; top:15.5%; width:26.5%; height:22.5%;">
-        <span class="zone-label">🗄️ Kệ tủ</span>
+        <span class="zone-label">Kệ tủ</span>
         <div class="placed-badges"></div>
       </div>
       <div class="dropzone spice" data-cat="spice" style="left:81.5%; top:44%; width:14.5%; height:17.5%;">
-        <span class="zone-label" style="padding:4px 7px;">🧂 Kệ gia vị</span>
+        <span class="zone-label">Kệ gia vị</span>
         <div class="placed-badges"></div>
       </div>
     </div>
@@ -72,14 +72,24 @@
       </button>
     </div>
 
-    <div class="box win-box" id="win-box">
-      <div class="win-head">
-        <img class="win-girl" src="images/girl-ok.png" alt="">
-        <div class="win-words">
-          <div class="win-title">Tuyệt vời!</div>
-          <div class="win-sub">Cả lớp đã cất giữ đúng hết tất cả!</div>
-        </div>
-      </div>
+  </div>
+</div>
+
+<div class="win-overlay" id="win-overlay">
+  <div class="win-card win-box" id="win-box">
+    <div class="win-left">
+      <img class="win-girl" src="images/girl-ok.png" alt="">
+      <div class="win-title">Tuyệt vời!</div>
+      <div class="win-sub">Cảm ơn tất cả các bạn!</div>
+      <button class="btn win-replay" onclick="resetGame()">
+        <svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.8 4.2v4.6h-4.6"/>
+        </svg>
+        Chơi lại
+      </button>
+    </div>
+    <div class="win-right">
       <div class="summary" id="summary"></div>
     </div>
   </div>
