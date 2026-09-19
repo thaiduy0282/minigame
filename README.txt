@@ -154,7 +154,10 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              tự xếp từ trái sang theo thứ tự kéo vào
       xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
              xoay:{dishrack:180} là úp ngược khi vào kệ chén
-      zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
+      zoom   Không bắt buộc. Phóng to ảnh trong hộp thoại kết quả, ví dụ
+             zoom:1.10 là thêm 10%
+      to     Không bắt buộc. Phóng to món SAU KHI đã cất vào bếp, ví dụ to:1.3
+             là thêm 30%. Khay thịt bò đang dùng to:1.3
       bigBadge  Không bắt buộc. Món cao như chai dầu thì hiện cao hơn món
              thường. Chiều cao lấy theo khe hẹp nhất nó phải lọt (khoảng giữa
              hai ngăn kệ tủ) nên đặt ở đâu chai cũng cao bằng nhau
