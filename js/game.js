@@ -431,15 +431,25 @@ function loadClips(list){
   return out;
 }
 /* mỗi món một câu, thiếu file thì đánh dấu là không có */
+/* Nạp giọng đọc cho từng món. Món cất được ở hai nơi thì nạp thêm một file
+   riêng cho mỗi nơi, đặt tên <mã món>-<mã nơi>.mp3, ví dụ chen-dishrack.mp3.
+   Thiếu file riêng thì tự dùng lại file chung <mã món>.mp3, nên cô thu dần
+   từng file cũng được, không phải thu một lượt. */
 function loadPerItem(dir){
   var map = {};
+  function nap(ten){
+    var a = new Audio(dir + ten + '.mp3');
+    a.preload = 'auto';
+    a.addEventListener('error', function(){ map[ten] = null; });
+    map[ten] = a;
+  }
   for(var i=0;i<items.length;i++){
-    (function(id){
-      var a = new Audio(dir + id + '.mp3');
-      a.preload = 'auto';
-      a.addEventListener('error', function(){ map[id] = null; });
-      map[id] = a;
-    })(items[i].id);
+    var it = items[i];
+    nap(it.id);
+    var ds = catList(it);
+    if(ds.length > 1){
+      for(var j=0;j<ds.length;j++) nap(it.id + '-' + ds[j]);
+    }
   }
   return map;
 }
@@ -550,8 +560,10 @@ function stopVoice(){
 
 /* đọc câu của đúng món vừa cất; nếu cất sai mà món chưa có câu riêng
    thì lấy một câu chung, không lặp lại câu vừa đọc. Trả về thời lượng (ms). */
-function playVoice(ok, item){
-  var clip = item ? (ok ? voiceOkItem : voiceNoItem)[item.id] : null;
+function playVoice(ok, item, noiTha){
+  var kho = ok ? voiceOkItem : voiceNoItem;
+  /* ưu tiên giọng thu riêng cho nơi vừa thả, không có thì dùng giọng chung */
+  var clip = item ? (kho[item.id + '-' + noiTha] || kho[item.id]) : null;
   if(!clip && !ok && voiceNoChung.length){
     var i = Math.floor(Math.random() * voiceNoChung.length);
     if(voiceNoChung.length > 1 && i === lastVoiceNo) i = (i + 1) % voiceNoChung.length;
@@ -632,7 +644,7 @@ function showResultDialog(item, ok, noiTha, after){
 
   /* hộp thoại mở ít nhất 3 giây, nếu câu đọc dài hơn thì chờ đọc xong hẳn */
   var openedAt = Date.now();
-  var voiceMs = playVoice(ok, item);
+  var voiceMs = playVoice(ok, item, noiTha);
   var hold = Math.max(DIALOG_MS, voiceMs ? voiceMs + 400 : 0);
 
   /* nếu lúc phát chưa biết độ dài file thì căn theo lúc đọc xong */

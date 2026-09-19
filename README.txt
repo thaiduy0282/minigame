@@ -223,6 +223,21 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
   vào danh sách VOICE_NO_CHUNG trong js/game.js.
   Nên cắt bỏ đoạn im lặng ở đầu file, nếu không nghe sẽ thấy khựng một nhịp.
 
+  MÓN CẤT ĐƯỢC Ở HAI NƠI
+  Ba món chén, dầu ăn, hũ tiêu có lời giải thích khác nhau tuỳ nơi học sinh
+  chọn, nên thu riêng mỗi nơi một file, đặt tên <id món>-<mã nơi>.mp3:
+
+      voice/correct/chen-dishrack.mp3    Chén vào kệ chén
+      voice/correct/chen-cabinet.mp3     Chén vào kệ tủ
+      voice/correct/dauan-spice.mp3      Dầu ăn vào kệ gia vị
+      voice/correct/dauan-cabinet.mp3    Dầu ăn vào kệ tủ
+      voice/correct/tieu-spice.mp3       Hũ tiêu vào kệ gia vị
+      voice/correct/tieu-cabinet.mp3     Hũ tiêu vào kệ tủ
+
+  Nội dung đọc lấy đúng câu why của nơi đó trong js/game.js.
+  Thiếu file riêng thì trò chơi tự dùng lại file chung (chen.mp3, dauan.mp3,
+  tieu.mp3), nên thu dần từng file cũng chạy được, không cần thu một lượt.
+
 3.5 ĐỔI VỊ TRÍ 5 NƠI CẤT GIỮ
   Mở index.html, sửa thuộc tính style (left/top/width/height) của các thẻ
   .dropzone. Tất cả tính theo phần trăm của ảnh bếp nên không lệ thuộc màn hình.
