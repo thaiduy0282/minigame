@@ -50,7 +50,7 @@
   }
   .game-name h1{
     margin:7px 0 0; font-weight:800; line-height:1.15; color:var(--teal);
-    font-size:clamp(27px, 4.4vh, 57px);
+    font-size:clamp(32px, 5.3vh, 68px);
   }
 
   .dropzone{
@@ -136,7 +136,7 @@
 
   .game-tag{
     display:inline-block; background:#3E7368; color:var(--white);
-    font-weight:800; letter-spacing:1px; font-size:clamp(14px, 2.1vh, 25px);
+    font-weight:800; letter-spacing:1px; font-size:clamp(17px, 2.5vh, 30px);
     padding:0.4em 1.2em; border-radius:999px;
     box-shadow:var(--shadow-soft);
   }
