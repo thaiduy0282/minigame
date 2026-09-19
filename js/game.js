@@ -135,6 +135,7 @@ window.addEventListener('resize', function(){
 var sideCol = document.querySelector('.side-col');
 var winOverlay = document.getElementById('win-overlay');
 var tray = document.getElementById('tray');
+var dragGhost = document.getElementById('drag-ghost');
 var itemsBox = document.querySelector('.box.items');
 var sceneWrap = document.getElementById('scene-wrap');
 var zones = document.querySelectorAll('.dropzone');
@@ -304,7 +305,7 @@ var treDoc = VOICE_DELAY;             /* chờ bao lâu rồi mới đọc lời
 var VOICE_WIN = 'voice/win.mp3';      /* câu cảm ơn cả lớp ở màn chiến thắng */
 var NHAC_THANG = 'voice/win-music.mp3';   /* nhạc mừng phát trước câu cảm ơn */
 var WIN_VOICE_DELAY = 1600;           /* chờ nhạc kèn tự tạo dứt rồi mới đọc */
-var NGHI_SAU_NHAC = 400;              /* nghỉ giữa nhạc và câu cảm ơn */
+var NGHI_SAU_NHAC = 100;              /* nghỉ giữa nhạc và câu cảm ơn */
 var VOICE_STUDENT_DIR = 'voice/student/';
 var VOICE_STUDENT_DEFAULT = '';
 
@@ -625,6 +626,12 @@ function makeCard(item){
     if(inputLocked()){ e.preventDefault(); return; }   /* đang quay số / hiện hộp thoại thì khoá khay */
     getCtx();
     e.dataTransfer.setData('text/plain', item.id);
+    e.dataTransfer.effectAllowed = 'move';
+    /* kéo theo mỗi hình món (nền trong suốt), không kéo theo nền thẻ */
+    if(dragGhost && e.dataTransfer.setDragImage){
+      dragGhost.src = iconSrc(item.id);
+      e.dataTransfer.setDragImage(dragGhost, dragGhost.offsetWidth / 2, dragGhost.offsetHeight / 2);
+    }
   });
   c.addEventListener('click', function(){
     if(inputLocked()) return;
@@ -735,6 +742,7 @@ for(var zi=0; zi<zones.length; zi++){
     zoneEl.addEventListener('dragover', function(e){
       if(inputLocked()) return;
       e.preventDefault();
+      if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
       zoneEl.classList.add('hover');
     });
     zoneEl.addEventListener('dragleave', function(){
