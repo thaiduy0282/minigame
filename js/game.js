@@ -9,6 +9,22 @@ function getCtx(){
   return audioCtx;
 }
 
+/* Mọi tiếng đều đi qua một bộ nén rồi mới ra loa. Nhờ vậy khi nhiều nốt chồng
+   lên nhau, tổng âm lượng bị ghìm lại chứ không vỡ tiếng, nên có thể vặn to
+   hơn hẳn mà vẫn nghe sạch. */
+var duongRa = null;
+function getOut(){
+  var ctx = getCtx(); if(!ctx) return null;
+  if(!duongRa){
+    var nen = ctx.createDynamicsCompressor();
+    duongRa = ctx.createGain();
+    duongRa.gain.value = 1;
+    duongRa.connect(nen);
+    nen.connect(ctx.destination);
+  }
+  return duongRa;
+}
+
 function playTone(freq, startAt, dur, type, vol){
   var ctx = getCtx(); if(!ctx) return;
   var osc = ctx.createOscillator();
@@ -18,7 +34,7 @@ function playTone(freq, startAt, dur, type, vol){
   gain.gain.setValueAtTime(0.0001, ctx.currentTime + startAt);
   gain.gain.exponentialRampToValueAtTime(vol || 0.25, ctx.currentTime + startAt + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startAt + dur);
-  osc.connect(gain); gain.connect(ctx.destination);
+  osc.connect(gain); gain.connect(getOut() || ctx.destination);
   osc.start(ctx.currentTime + startAt);
   osc.stop(ctx.currentTime + startAt + dur + 0.05);
 }
@@ -48,13 +64,13 @@ function soundWin(delay){
 }
 
 function soundTick(){
-  playTone(1250, 0, 0.04, 'square', 0.17);
+  playTone(1250, 0, 0.045, 'square', 1.2);
 }
 /* tiếng "ting" lúc chốt tên: hai nốt đi lên, ngân dài cho cả lớp nghe rõ */
 function soundPick(){
-  playTone(880, 0, 0.15, 'sine', 0.5);
-  playTone(1320, 0.11, 0.45, 'sine', 0.46);
-  playTone(1760, 0.14, 0.5, 'sine', 0.2);
+  playTone(880, 0, 0.16, 'sine', 1.1);
+  playTone(1320, 0.11, 0.5, 'sine', 1.0);
+  playTone(1760, 0.14, 0.55, 'sine', 0.45);
 }
 
 /* ============ DỮ LIỆU ============ */
@@ -514,7 +530,9 @@ function showResultDialog(item, ok, wrongCat, after){
 
   dialogEl.classList.remove('ok', 'no');
   dialogEl.classList.add(ok ? 'ok' : 'no');
-  dialogHead.textContent = ok ? '✅ Đúng rồi!' : '❌ Chưa đúng!';
+  /* dấu đúng/sai vẽ y như huy hiệu trên ảnh học sinh ở bảng tổng kết cuối giờ */
+  dialogHead.innerHTML = '<span class="head-mark">' + (ok ? '✓' : '✗') + '</span>' +
+                         (ok ? 'Đúng rồi!' : 'Chưa đúng!');
   dialogImg.src = iconSrc(item.id);
   if(dialogGirl) dialogGirl.src = ok ? GIRL_OK : GIRL_NO;
   dialogImg.style.transform = item.zoom ? 'scale(' + item.zoom + ')' : '';

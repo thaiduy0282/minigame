@@ -321,7 +321,21 @@
   }
   .result-dialog.ok .result-card{ border-top-color:#3FAE6A; }
   .result-dialog.no .result-card{ border-top-color:var(--coral-deep); }
-  .result-head{ font-size:38px; font-weight:800; margin-bottom:16px; }
+  .result-head{
+    font-size:38px; font-weight:800; margin-bottom:16px;
+    display:flex; align-items:center; justify-content:center; gap:0.34em;
+  }
+  /* Huy hiệu đúng/sai: cùng một kiểu với .sum-mark ở bảng tổng kết cuối giờ -
+     vòng tròn đặc, dấu trắng ở giữa, giữ đúng tỉ lệ dấu so với vòng tròn. */
+  .head-mark{
+    flex:0 0 auto;
+    width:1.76em; height:1.76em; font-size:0.58em; line-height:1;
+    border-radius:50%; border:3px solid var(--white);
+    color:var(--white); font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .result-dialog.ok .head-mark{ background:#3FAE6A; }
+  .result-dialog.no .head-mark{ background:var(--coral-deep); }
   .result-dialog.ok .result-head{ color:#2E9256; }
   .result-dialog.no .result-head{ color:var(--coral-deep); }
   .result-body{ display:flex; align-items:center; justify-content:center; gap:18px; }
