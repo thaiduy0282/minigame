@@ -284,41 +284,17 @@
     text-shadow:0 3px 10px rgba(0,0,0,0.35);
   }
   .spin-photo{
-    position:relative;
     width:66vh; height:66vh; max-width:86vw; max-height:86vw; margin:0 auto;
     border-radius:50%; overflow:hidden; background:var(--white);
     border:10px solid var(--white); box-shadow:0 18px 44px rgba(0,0,0,0.45);
-    transition:border-color .25s ease, box-shadow .25s ease;
+    transition:border-color .25s ease;
   }
-  /* Các khuôn mặt xếp chồng lên nhau ngay tại chỗ, không chạy đi đâu cả.
-     js/game.js lần lượt cho từng ảnh hiện lên đè lên ảnh đang đứng dưới, nên
-     mắt chỉ thấy ảnh đổi tại chỗ chứ không phải một dải trôi ngang. */
-  .spin-faces{ position:absolute; inset:0; }
-  .spin-faces img{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; display:block;
-    opacity:0; transition:opacity 40ms linear;
-  }
-  .spin-faces img.hien{ opacity:1; }
+  .spin-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
   .spin-name{
     font-size:62px; font-weight:800; color:var(--white);
     margin-top:20px; min-height:1.2em; text-shadow:0 3px 10px rgba(0,0,0,0.35);
-    opacity:0;
   }
-  .spin-overlay.landed .spin-photo{
-    border-color:var(--sun);
-    box-shadow:0 18px 44px rgba(0,0,0,0.45), 0 0 0 10px rgba(255,200,69,0.30);
-    animation:spin-pop .42s cubic-bezier(.3,1.5,.5,1) both;
-  }
-  .spin-overlay.landed .spin-name{ opacity:1; animation:spin-name-in .34s ease-out both; }
-
-  /* Mở màn: nền mờ dần, vòng quay phóng nhẹ ra - cho đỡ bị "nhảy" đột ngột */
-  .spin-overlay.show{ animation:spin-fade .26s ease-out both; }
-  .spin-overlay.show .spin-stage{ animation:spin-zoom .34s cubic-bezier(.2,.9,.3,1.1) both; }
-  @keyframes spin-fade{ from{ opacity:0; } to{ opacity:1; } }
-  @keyframes spin-zoom{ from{ opacity:0; transform:scale(.88); } to{ opacity:1; transform:scale(1); } }
-  @keyframes spin-pop{ 0%{ transform:scale(1); } 45%{ transform:scale(1.045); } 100%{ transform:scale(1); } }
-  @keyframes spin-name-in{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+  .spin-overlay.landed .spin-photo{ border-color:var(--sun); }
 
   /* ---------- Hộp thoại đúng / sai ---------- */
   .result-dialog{

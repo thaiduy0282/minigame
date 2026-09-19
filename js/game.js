@@ -148,7 +148,7 @@ var total = items.length;
 /* ============ QUAY SỐ MỜI HỌC SINH ============ */
 var STUDENT_DIR = 'images/students/';
 var spinOverlay = document.getElementById('spin-overlay');
-var spinFaces   = document.getElementById('spin-faces');
+var spinImg     = document.getElementById('spin-img');
 var spinName    = document.getElementById('spin-name');
 var spinHead    = document.getElementById('spin-head');
 var spinBox     = document.getElementById('spin-box');
@@ -159,13 +159,6 @@ var startBtn    = document.getElementById('start-btn');
 var respinBtn   = document.getElementById('respin-btn');
 
 var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu nhỏ */
-/* Vòng quay đổi ảnh ngay tại chỗ. Nhịp nhanh dần thành chậm dần là do quãng
-   nghỉ giữa hai lần đổi cứ dài thêm: 40ms, 50, 62... rồi 582, 728 - tổng cộng
-   khoảng 3,5 giây, càng về cuối càng hồi hộp. */
-var SPIN_MAT      = 15;       /* bao nhiêu khuôn mặt hiện ra, ảnh cuối là bạn trúng */
-var SPIN_STEP_MS  = 40;       /* quãng nghỉ giữa hai lần đổi lúc mới bắt đầu */
-var SPIN_CHAM     = 1.25;     /* mỗi lần nghỉ lâu hơn lần trước bấy nhiêu lần */
-var SPIN_FADE_MAX = 260;      /* hai ảnh mờ chồng lên nhau tối đa bao lâu */
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
 var gameStarted = false;    /* đã bấm "Bắt đầu" chưa - trước đó cô chơi thử tự do */
 var spinning = false;       /* đang quay thì khoá khay đồ */
@@ -215,31 +208,9 @@ function pickStudent(){
   return students[lastPicked];
 }
 
-/* Xếp sẵn các khuôn mặt chồng lên nhau, ảnh cuối cùng là bạn được chọn.
-   Xếp sẵn thế này thì lúc quay chỉ việc cho ảnh hiện lên, không phải tải ảnh
-   mới giữa chừng nên không bị chớp. */
-function buildFaces(target){
-  var list = [];
-  while(list.length < SPIN_MAT - 1){
-    var bag = students.slice();
-    for(var i=bag.length-1;i>0;i--){
-      var k = Math.floor(Math.random()*(i+1));
-      var t = bag[i]; bag[i] = bag[k]; bag[k] = t;
-    }
-    list = list.concat(bag);
-  }
-  list = list.slice(0, SPIN_MAT - 1);
-  /* đừng để đúng ảnh đó hiện ngay trước lúc chốt, nhìn sẽ như bị đứng máy */
-  if(list.length && list[list.length-1] === target) list[list.length-1] = list[0];
-  list.push(target);
-
-  var html = '';
-  for(var n=0;n<list.length;n++){
-    html += '<img class="' + (n === 0 ? 'hien' : '') + '" src="' +
-            STUDENT_DIR + list[n].file + '" alt="">';
-  }
-  spinFaces.innerHTML = html;
-  return list.length - 1;
+function showSpinFace(s){
+  spinImg.src = STUDENT_DIR + s.file;
+  spinName.textContent = s.name || '';
 }
 
 function spinForNextStudent(){
@@ -247,46 +218,38 @@ function spinForNextStudent(){
   var target = pickStudent();
   spinning = true;
   spinOverlay.classList.remove('landed');
-  spinHead.textContent = 'Quay số chọn bạn…';
-  spinName.textContent = target.name || '';   /* đặt sẵn, CSS giấu tới lúc dừng */
   spinOverlay.classList.add('show');
+  spinHead.textContent = 'Quay số chọn bạn…';
 
-  var cuoi = buildFaces(target);
-  var mat = spinFaces.children;
-  var i = 0, nghi = SPIN_STEP_MS;
-
-  function doiMat(){
-    i++;
-    /* ảnh mới nằm sau trong danh sách nên tự động đè lên ảnh cũ: chỉ cần cho nó
-       hiện dần là thành đổi mặt tại chỗ, không có vệt trôi ngang nào cả */
-    mat[i].style.transitionDuration = Math.min(nghi * 0.6, SPIN_FADE_MAX) + 'ms';
-    mat[i].classList.add('hien');
-    if(i >= cuoi){ dung(); return; }
+  var delay = 28, elapsed = 0;
+  function step(){
+    if(elapsed >= 1900){                       /* tổng vòng quay khoảng 2,4 giây */
+      currentStudent = target;
+      showSpinFace(target);
+      spinHead.textContent = 'Xin mời bạn';
+      spinOverlay.classList.add('landed');
+      soundPick();
+      playStudentName(target);                 /* gọi tên bạn vừa trúng */
+      setTimeout(function(){                   /* giữ mặt to cho cả lớp nhìn rõ */
+        spinOverlay.classList.remove('show');
+        spinning = false;
+        spinBox.classList.add('playing');
+        spinBox.classList.remove('cho-quay');
+        if(itemsBox) itemsBox.classList.remove('cho-quay');
+        choBamQuay = false;
+        turnImg.src = STUDENT_DIR + target.file;
+        turnName.textContent = target.name || '';
+        if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
+      }, SPIN_HOLD_MS);
+      return;
+    }
+    showSpinFace(students[Math.floor(Math.random()*students.length)]);
     soundTick();
-    nghi = nghi * SPIN_CHAM;                 /* lần sau nghỉ lâu hơn một chút */
-    setTimeout(doiMat, nghi);
+    elapsed += delay;
+    delay = delay * 1.17 + 3;                  /* lúc đầu chạy rất nhanh, càng về sau càng chậm */
+    setTimeout(step, delay);
   }
-
-  function dung(){
-    currentStudent = target;
-    spinHead.textContent = 'Xin mời bạn';
-    spinOverlay.classList.add('landed');
-    soundPick();
-    playStudentName(target);                 /* gọi tên bạn vừa trúng */
-    setTimeout(function(){                   /* giữ mặt to cho cả lớp nhìn rõ */
-      spinOverlay.classList.remove('show');
-      spinning = false;
-      spinBox.classList.add('playing');
-      spinBox.classList.remove('cho-quay');
-      if(itemsBox) itemsBox.classList.remove('cho-quay');
-      choBamQuay = false;
-      turnImg.src = STUDENT_DIR + target.file;
-      turnName.textContent = target.name || '';
-      if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
-    }, SPIN_HOLD_MS);
-  }
-
-  setTimeout(doiMat, nghi);
+  step();
 }
 
 function startStudentGame(){
