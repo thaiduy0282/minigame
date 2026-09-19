@@ -93,7 +93,7 @@ var items = [
   {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
   {id:'chen', label:'Chén', cat:['dishrack','cabinet'],
-   spot:{dishrack:{left:'36%', bottom:'5%'}, cabinet:{left:'8%', bottom:'40%'}},
+   spot:{dishrack:{left:'36%', bottom:'9%'}, cabinet:{left:'8%', bottom:'40%'}},
    why:{dishrack:'Chén vừa rửa xong thì úp lên kệ chén cho ráo nước đã.',
         cabinet:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'}},
 
@@ -189,8 +189,8 @@ function fitTray(){
   var khay = document.getElementById('tray');
   var box  = document.querySelector('.box.items');
   var cot  = document.querySelector('.side-col');
-  var gioi = document.querySelector('.box.info');
-  if(!khay || !box || !cot || !gioi || !khay.children.length) return;
+  var gioi = document.querySelector('.box.info');     /* có thể đã bỏ đi */
+  if(!khay || !box || !cot || !khay.children.length) return;
   var caoCot = cot.clientHeight;
   if(!caoCot) return;
 
@@ -207,7 +207,7 @@ function fitTray(){
   var chuaQuay = anhHS
     ? anhHS * (thap ? 0.8 : 1) + (thap ? 48 : TRAY_CHUA_NUT)
     : Math.max(140, caoCot * TRAY_CHUA_QUAY);
-  var conLai = caoCot - gioi.offsetHeight - 14 - chuaQuay - 14;
+  var conLai = caoCot - (gioi ? gioi.offsetHeight + 14 : 0) - chuaQuay - 14;
 
   /* đo phần chữ và lề của thẻ khi ảnh đang ở một cỡ đã biết */
   khay.style.setProperty('--mon', '40px');
@@ -218,7 +218,7 @@ function fitTray(){
   var hang = Math.ceil(the.length / TRAY_COT);
   var khe = parseFloat(window.getComputedStyle(khay).rowGap) || 0;
   var anh = (conLai - khungKhay - (hang - 1) * khe) / hang - vien;
-  anh = Math.min(anh, the[0].clientWidth * 0.72);         /* đừng rộng quá bề ngang thẻ */
+  anh = Math.min(anh, the[0].clientWidth * 0.78);         /* đừng rộng quá bề ngang thẻ */
   anh = Math.max(TRAY_ANH_MIN, Math.floor(anh));
   khay.style.setProperty('--mon', anh + 'px');
 

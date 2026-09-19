@@ -29,8 +29,9 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
       Tủ lạnh - Kệ tủ - Kệ gia vị - Kệ chén - Sọt rác
   Một số món cất ở hai nơi đều đúng: chén (kệ chén hoặc kệ tủ), dầu ăn và hũ
   tiêu (kệ gia vị hoặc kệ tủ). Lời giải thích đổi theo nơi học sinh chọn.
+  Tên trò chơi nằm ngay trên mảng tường trống góc trái của tranh bếp, không
+  chiếm chỗ của cột bên phải.
   Bên phải, từ trên xuống:
-      - Tên trò chơi và 2 dòng luật chơi
       - Khay 9 món cần cất giữ, xáo trộn ngẫu nhiên mỗi lần mở trang,
         xếp 3 hàng 3 cột và tự phóng to hết cỡ màn hình cho phép
       - Ô quay số mời học sinh
@@ -241,8 +242,14 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
                                Giảm xuống là khay đồ được thêm chỗ, ảnh to hơn
       SUM_HANG_TOI_DA      4   Bảng tổng kết tối đa mấy hàng
 
-3.7 ĐỔI TÊN TRÒ CHƠI HOẶC LUẬT CHƠI
-  Sửa trực tiếp trong index.html.
+3.7 ĐỔI TÊN TRÒ CHƠI
+  Sửa trực tiếp trong index.html, tìm thẻ <div class="game-name"> nằm trong
+  khung bếp. Muốn dời tên đi chỗ khác thì sửa left/top của .game-name trong
+  css/style.css, tính theo phần trăm của ảnh bếp.
+
+  Bản này không còn khối luật chơi trên màn hình, để dành hết chỗ cho khay đồ.
+  Muốn đưa luật chơi trở lại thì thêm một khối <div class="box"> vào đầu cột
+  phải trong index.html - khay đồ sẽ tự thu nhỏ lại cho vừa.
 
 
 ==============================================================================
