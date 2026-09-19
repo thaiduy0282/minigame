@@ -92,7 +92,7 @@
   }
   .dropzone.trash .hang{ top:33%; left:6%; right:6%; justify-content:center; }
   .dropzone.spice .hang{ bottom:7%; left:4%; right:4%; }
-  /* kệ tủ: kéo trước đứng trái, kéo sau đứng kế bên, đứng trên mặt ngăn dưới */
+  /* tủ bếp: kéo trước đứng trái, kéo sau đứng kế bên, đứng trên mặt ngăn dưới */
   .dropzone.cabinet .hang{ bottom:1%; left:5%; right:5%;
     justify-content:flex-start; gap:9px; }
   /* 3. nhãn kệ chén nhô lên khỏi mép giá cho khỏi đè lên chỗ úp chén */
@@ -107,8 +107,8 @@
   }
   .placed-badge img{ filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35)); }
   /* Món cao như chai dầu: ô đựng ôm sát bề ngang ảnh. Chiều cao lấy theo khe
-     hẹp nhất mà nó phải lọt - khoảng giữa hai ngăn kệ tủ - nên đặt ở kệ gia vị
-     hay kệ tủ thì chai cũng cao đúng bằng nhau. */
+     hẹp nhất mà nó phải lọt - khoảng giữa hai ngăn tủ bếp - nên đặt ở kệ gia vị
+     hay tủ bếp thì chai cũng cao đúng bằng nhau. */
   .placed-badge.big{
     width:auto; height:calc(clamp(56px, 8.6vh, 100px) * 1.2);
   }

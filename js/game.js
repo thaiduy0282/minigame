@@ -85,10 +85,10 @@ var items = [
 
   {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:true,
    why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
-        cabinet:'Cất vào kệ tủ cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
+        cabinet:'Cất vào tủ bếp cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
   {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'], khay:0.9,
    why:{spice:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.',
-        cabinet:'Cất vào kệ tủ cũng đúng, chỗ kín và khô thì tiêu giữ được mùi thơm.'}},
+        cabinet:'Cất vào tủ bếp cũng đúng, chỗ kín và khô thì tiêu giữ được mùi thơm.'}},
 
   {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
@@ -106,7 +106,7 @@ var items = [
    vừa đúng 3 hàng đầy, thẻ to nhất và không thừa chỗ trống. */
 items = items.filter(function(mon){ return !mon.an; });
 
-var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Kệ tủ',
+var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Tủ bếp',
                 trash:'Sọt rác', dishrack:'Kệ chén'};
 
 /* Một món có thể cất đúng ở nhiều nơi: viết cat:['spice','cabinet'] là cả hai

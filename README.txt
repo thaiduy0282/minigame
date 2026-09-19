@@ -26,9 +26,9 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
 
 1.1 MÀN HÌNH CHÍNH
   Bên trái là khung bếp với 5 nơi cất giữ, viền nét đứt:
-      Tủ lạnh - Kệ tủ - Kệ gia vị - Kệ chén - Sọt rác
-  Một số món cất ở hai nơi đều đúng: chén (kệ chén hoặc kệ tủ), dầu ăn và hũ
-  tiêu (kệ gia vị hoặc kệ tủ). Lời giải thích đổi theo nơi học sinh chọn.
+      Tủ lạnh - Tủ bếp - Kệ gia vị - Kệ chén - Sọt rác
+  Một số món cất ở hai nơi đều đúng: chén (kệ chén hoặc tủ bếp), dầu ăn và hũ
+  tiêu (kệ gia vị hoặc tủ bếp). Lời giải thích đổi theo nơi học sinh chọn.
   Tên trò chơi nằm ngay trên mảng tường trống góc trái của tranh bếp, không
   chiếm chỗ của cột bên phải.
   Bên phải, từ trên xuống:
@@ -146,13 +146,13 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              giọng trong voice/correct/
       label  Chữ hiện dưới ảnh trong khay
       cat    Nơi cất đúng, nhận 1 trong 5 giá trị:
-             fridge (Tủ lạnh), spice (Kệ gia vị), cabinet (Kệ tủ),
+             fridge (Tủ lạnh), spice (Kệ gia vị), cabinet (Tủ bếp),
              dishrack (Kệ chén), trash (Sọt rác)
       why    Câu giải thích hiện trong hộp thoại khi cất đúng
       spot   Không bắt buộc. Chỗ đứng riêng của món, tính theo phần trăm:
              left là mép trái, bottom là khoảng cách tới đáy ngăn. Món KHÔNG
              ghi spot cho nơi đó thì tự xếp ngang theo thứ tự kéo vào, kéo
-             trước đứng trái. Hai kiểu dùng chung một nơi được: trong kệ tủ,
+             trước đứng trái. Hai kiểu dùng chung một nơi được: trong tủ bếp,
              chén có spot nên đứng riêng ngăn trên, còn mì gói, dầu ăn, hũ tiêu
              không có spot nên xếp ngang ở ngăn dưới
       xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
@@ -166,19 +166,19 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              là thêm 30%. Khay thịt bò đang dùng to:1.3
       bigBadge  Không bắt buộc. Món cao như chai dầu thì hiện cao hơn món
              thường. Chiều cao lấy theo khe hẹp nhất nó phải lọt (khoảng giữa
-             hai ngăn kệ tủ) nên đặt ở đâu chai cũng cao bằng nhau
+             hai ngăn tủ bếp) nên đặt ở đâu chai cũng cao bằng nhau
 
   MỘT MÓN CẤT ĐƯỢC Ở HAI NƠI
   Viết cat thành danh sách là cả hai nơi đều tính đúng:
 
       {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'],
        spot:{cabinet:{left:'62%', bottom:'8%'}},
-       why:{spice:'Tiêu để kệ gia vị...', cabinet:'Cất vào kệ tủ cũng đúng...'}},
+       why:{spice:'Tiêu để kệ gia vị...', cabinet:'Cất vào tủ bếp cũng đúng...'}},
 
   Khi đó why, spot và bigBadge viết được hai kiểu:
       - một giá trị dùng chung cho mọi nơi, như các món chỉ có một nơi
       - hoặc tách riêng từng nơi như ví dụ trên, nơi nào không ghi thì bỏ qua
-  Nhờ vậy chai dầu ăn đứng to trên kệ gia vị nhưng vào kệ tủ thì nhỏ lại cho
+  Nhờ vậy chai dầu ăn đứng to trên kệ gia vị nhưng vào tủ bếp thì nhỏ lại cho
   vừa chiều cao ngăn.
       an     Không bắt buộc. Thêm an:true là TẠM CẤT món đó đi, món vẫn nằm
              nguyên trong file, bỏ chữ an:true là hiện lại. Hộp cà phê đang
@@ -228,11 +228,11 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
   chọn, nên thu riêng mỗi nơi một file, đặt tên <id món>-<mã nơi>.mp3:
 
       voice/correct/chen-dishrack.mp3    Chén vào kệ chén
-      voice/correct/chen-cabinet.mp3     Chén vào kệ tủ
+      voice/correct/chen-cabinet.mp3     Chén vào tủ bếp
       voice/correct/dauan-spice.mp3      Dầu ăn vào kệ gia vị
-      voice/correct/dauan-cabinet.mp3    Dầu ăn vào kệ tủ
+      voice/correct/dauan-cabinet.mp3    Dầu ăn vào tủ bếp
       voice/correct/tieu-spice.mp3       Hũ tiêu vào kệ gia vị
-      voice/correct/tieu-cabinet.mp3     Hũ tiêu vào kệ tủ
+      voice/correct/tieu-cabinet.mp3     Hũ tiêu vào tủ bếp
 
   Nội dung đọc lấy đúng câu why của nơi đó trong js/game.js.
   Thiếu file riêng thì trò chơi tự dùng lại file chung (chen.mp3, dauan.mp3,
