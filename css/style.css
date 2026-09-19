@@ -47,8 +47,8 @@
   }
   /* chỉ cắt phần đồ đã cất, còn nhãn được phép nhô ra ngoài cho khỏi bị che */
   .placed-badges{ overflow:hidden; }
-  /* sọt rác hẹp nên đẩy nhãn sang trái cho nằm gọn trên thùng rác */
-  .dropzone.trash .zone-label{ margin-left:-16%; }
+  /* thùng rác vẽ rộng ra rồi nên nhãn nằm gọn trong viền, không cần lệch nữa */
+  .dropzone.trash .zone-label{ margin-left:0; }
   /* rác rơi đúng vào miệng thùng chứ không lơ lửng phía trên */
   .dropzone.trash .placed-badges{
     position:absolute; top:41%; left:6%; right:6%; margin-top:0;
@@ -76,11 +76,15 @@
   .dropzone.wrong-flash{ border-color:var(--coral-deep); background-color:rgba(232,83,71,0.38); }
 
   .placed-badges{ display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-  /* tủ lạnh, kệ tủ, kệ chén: mỗi món đứng đúng chỗ riêng (toạ độ trong game.js) */
+  /* tủ lạnh và kệ chén: mỗi món đứng đúng chỗ riêng (toạ độ trong game.js) */
   .dropzone.fridge .placed-badges,
-  .dropzone.cabinet .placed-badges,
   .dropzone.dishrack .placed-badges{
     position:absolute; inset:0; margin:0; display:block;
+  }
+  /* kệ tủ: món tự xếp trên mặt kệ dưới, kéo trước đứng trái, kéo sau đứng kế bên */
+  .dropzone.cabinet .placed-badges{
+    position:absolute; bottom:5%; left:5%; right:5%; margin-top:0;
+    justify-content:flex-start; align-items:flex-end; gap:9px;
   }
   /* kệ gia vị: hạ đồ xuống cho đứng trên mặt kệ dưới */
   .dropzone.spice .placed-badges{
@@ -88,7 +92,7 @@
     align-items:flex-end;
   }
   /* 3. nhãn kệ chén nhô lên khỏi mép giá cho khỏi đè lên chỗ úp chén */
-  .dropzone.dishrack .zone-label{ margin-left:-6%; margin-top:-0.95em; }
+  .dropzone.dishrack .zone-label{ margin-left:-6%; margin-top:-1.75em; }
   .placed-badge{
     background:rgba(255,255,255,0.95); border-radius:11px; padding:3px;
     box-shadow:0 2px 6px rgba(0,0,0,0.22);
@@ -102,7 +106,7 @@
   .placed-badge.big img{ width:auto; height:100%; }
   /* cỡ vừa: cho món cao đứng trong ngăn thấp, cao hơn cỡ thường nhưng vẫn lọt ngăn */
   .placed-badge.vua{
-    width:auto; height:clamp(46px, 6.9vh, 78px);
+    width:auto; height:clamp(52px, 7.9vh, 88px);
     border-radius:14px; padding:4px;
   }
   .placed-badge.vua img{ width:auto; height:100%; }

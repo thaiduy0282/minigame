@@ -84,18 +84,16 @@ var items = [
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'45%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
   {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:{spice:true, cabinet:'vua'},
-   spot:{cabinet:{left:'40%', bottom:'8%'}},
    why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
         cabinet:'Cất vào kệ tủ cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
   {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'],
-   spot:{cabinet:{left:'62%', bottom:'8%'}},
    why:{spice:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.',
         cabinet:'Cất vào kệ tủ cũng đúng, chỗ kín và khô thì tiêu giữ được mùi thơm.'}},
 
-  {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
-  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
+  {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
+  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
   {id:'chen', label:'Chén', cat:['dishrack','cabinet'],
-   spot:{dishrack:{left:'24%', bottom:'6%'}, cabinet:{left:'6%', bottom:'49%'}},
+   spot:{dishrack:{left:'24%', bottom:'6%'}}, xoay:{dishrack:180},
    why:{dishrack:'Chén vừa rửa xong thì úp lên kệ chén cho ráo nước đã.',
         cabinet:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'}},
 
@@ -829,7 +827,9 @@ function tryPlace(id, zoneEl){
       badge.style.left = cho.left;
       badge.style.bottom = cho.bottom;
     }
-    badge.innerHTML = '<img src="' + iconSrc(item.id) + '" alt="">';
+    var xoay = theoNoi(item.xoay, cat, 0);        /* chén úp xuống khi vào kệ chén */
+    badge.innerHTML = '<img src="' + iconSrc(item.id) + '" alt=""' +
+      (xoay ? ' style="transform:rotate(' + xoay + 'deg)"' : '') + '>';
     zoneEl.querySelector('.placed-badges').appendChild(badge);
     if(cardEl) cardEl.remove();
     correctCount++;

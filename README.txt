@@ -148,8 +148,12 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              fridge (Tủ lạnh), spice (Kệ gia vị), cabinet (Kệ tủ),
              dishrack (Kệ chén), trash (Sọt rác)
       why    Câu giải thích hiện trong hộp thoại khi cất đúng
-      spot   Không bắt buộc. Chỗ đứng riêng của món trong ngăn, tính theo phần
-             trăm: left là mép trái, bottom là khoảng cách tới đáy ngăn
+      spot   Không bắt buộc. Chỗ đứng riêng của món, tính theo phần trăm:
+             left là mép trái, bottom là khoảng cách tới đáy ngăn. Chỉ tủ lạnh
+             và kệ chén dùng toạ độ riêng; kệ tủ, kệ gia vị và sọt rác thì món
+             tự xếp từ trái sang theo thứ tự kéo vào
+      xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ. Chén
+             có xoay:{dishrack:180} để úp xuống khi vào kệ chén
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
       bigBadge  Không bắt buộc. bigBadge:true là món hiện to gấp đôi (chai cao
              đứng trên kệ hở), bigBadge:'vua' là cỡ vừa cho ngăn thấp như kệ tủ
