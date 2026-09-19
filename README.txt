@@ -52,9 +52,11 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
 1.4 QUAY SỐ MỜI HỌC SINH
   - Mới mở trang: cô kéo thử vài món cho cả lớp xem, chưa quay số.
     Lượt chơi thử này không bị tính vào bảng tổng kết.
-  - Bấm "Bắt đầu quay số": ảnh các bạn chạy nhanh rồi chậm dần giữa màn hình
-    khoảng 2,4 giây, dừng lại ở một bạn, viền ảnh chuyển sang vàng, đọc tên
-    bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ về ô bên phải.
+  - Bấm "Bắt đầu quay số": cả màn hình mờ đi, hiện một vòng tròn lớn có dải
+    ảnh các bạn trượt ngang như máy quay số, lao rất nhanh rồi chậm dần và
+    dừng đúng giữa khuôn mặt một bạn sau khoảng 2,8 giây. Viền ảnh chuyển
+    sang vàng, hiện tên và đọc tên bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ
+    về ô bên phải.
   - Bạn được mời tự chọn món bất kỳ trong khay và cất.
   - Cất xong, trò chơi DỪNG LẠI chờ cô: khay đồ mờ đi và hiện dòng
     "Hết lượt rồi - Bấm Quay tiếp để mời bạn khác".
@@ -189,6 +191,8 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
 3.6 ĐỔI CÁC MỐC THỜI GIAN
   Nằm ở đầu js/game.js, đơn vị mili giây (1000 = 1 giây):
 
+      SPIN_MS           2800   Dải ảnh chạy bao lâu rồi dừng hẳn
+      SPIN_TILES          22   Bao nhiêu khuôn mặt lướt qua trước khi dừng
       SPIN_HOLD_MS      3500   Giữ khuôn mặt to sau khi quay trúng
       DIALOG_MS         3000   Hộp thoại mở tối thiểu bao lâu
       CHEN_KHI_DUNG      800   Kéo đúng: chờ bao lâu rồi mới đọc giải thích

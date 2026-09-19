@@ -146,7 +146,8 @@ var total = items.length;
 /* ============ QUAY SỐ MỜI HỌC SINH ============ */
 var STUDENT_DIR = 'images/students/';
 var spinOverlay = document.getElementById('spin-overlay');
-var spinImg     = document.getElementById('spin-img');
+var spinPhoto   = document.getElementById('spin-photo');
+var spinReel    = document.getElementById('spin-reel');
 var spinName    = document.getElementById('spin-name');
 var spinHead    = document.getElementById('spin-head');
 var spinBox     = document.getElementById('spin-box');
@@ -157,6 +158,9 @@ var startBtn    = document.getElementById('start-btn');
 var respinBtn   = document.getElementById('respin-btn');
 
 var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu nhỏ */
+var SPIN_MS      = 2800;      /* dải ảnh chạy bao lâu rồi dừng hẳn */
+var SPIN_TILES   = 22;        /* bao nhiêu khuôn mặt lướt qua trước khi dừng */
+var SPIN_EASE    = 'cubic-bezier(.09,.79,.16,1)';   /* lao rất nhanh rồi từ từ đứng lại */
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
 var gameStarted = false;    /* đã bấm "Bắt đầu" chưa - trước đó cô chơi thử tự do */
 var spinning = false;       /* đang quay thì khoá khay đồ */
@@ -206,9 +210,47 @@ function pickStudent(){
   return students[lastPicked];
 }
 
-function showSpinFace(s){
-  spinImg.src = STUDENT_DIR + s.file;
-  spinName.textContent = s.name || '';
+/* Dựng dải ảnh cho vòng quay: một loạt khuôn mặt ngẫu nhiên, ô cuối cùng là
+   bạn được chọn. Trả về vị trí ô cuối để biết phải trượt đi bao xa. */
+function buildReel(target){
+  var list = [];
+  while(list.length < SPIN_TILES){
+    var bag = students.slice();
+    for(var i=bag.length-1;i>0;i--){
+      var k = Math.floor(Math.random()*(i+1));
+      var t = bag[i]; bag[i] = bag[k]; bag[k] = t;
+    }
+    list = list.concat(bag);
+  }
+  list = list.slice(0, SPIN_TILES);
+  /* đừng để đúng ảnh đó nằm sát ngay trước ô dừng, nhìn sẽ như bị khựng */
+  if(list.length && list[list.length-1] === target) list[list.length-1] = list[0];
+  list.push(target);
+
+  var html = '';
+  for(var n=0;n<list.length;n++){
+    html += '<img src="' + STUDENT_DIR + list[n].file + '" alt="">';
+  }
+  spinReel.innerHTML = html;
+  return list.length - 1;
+}
+
+/* Tiếng "tạch" mỗi khi có một khuôn mặt chạy qua giữa vòng tròn. Đọc thẳng vị
+   trí thật của dải ảnh nên tiếng kêu thưa dần đúng theo lúc vòng quay chậm lại. */
+function keuTichTac(oRong){
+  var truoc = -1;
+  function nhin(){
+    if(!spinning || spinOverlay.classList.contains('landed')) return;
+    var m = window.getComputedStyle(spinReel).transform, x = 0;
+    if(m && m !== 'none'){
+      var so = m.slice(m.indexOf('(') + 1, m.indexOf(')')).split(',');
+      x = parseFloat(so[so.length === 6 ? 4 : 12]) || 0;
+    }
+    var o = Math.round(-x / oRong);
+    if(o !== truoc){ truoc = o; soundTick(); }
+    requestAnimationFrame(nhin);
+  }
+  requestAnimationFrame(nhin);
 }
 
 function spinForNextStudent(){
@@ -216,38 +258,46 @@ function spinForNextStudent(){
   var target = pickStudent();
   spinning = true;
   spinOverlay.classList.remove('landed');
-  spinOverlay.classList.add('show');
   spinHead.textContent = 'Quay số chọn bạn…';
+  spinName.textContent = target.name || '';   /* đặt sẵn, CSS giấu tới lúc dừng */
+  spinOverlay.classList.add('show');
 
-  var delay = 28, elapsed = 0;
-  function step(){
-    if(elapsed >= 1900){                       /* tổng vòng quay khoảng 2,4 giây */
-      currentStudent = target;
-      showSpinFace(target);
-      spinHead.textContent = 'Xin mời bạn';
-      spinOverlay.classList.add('landed');
-      soundPick();
-      playStudentName(target);                 /* gọi tên bạn vừa trúng */
-      setTimeout(function(){                   /* giữ mặt to cho cả lớp nhìn rõ */
-        spinOverlay.classList.remove('show');
-        spinning = false;
-        spinBox.classList.add('playing');
-        spinBox.classList.remove('cho-quay');
-        if(itemsBox) itemsBox.classList.remove('cho-quay');
-        choBamQuay = false;
-        turnImg.src = STUDENT_DIR + target.file;
-        turnName.textContent = target.name || '';
-        if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
-      }, SPIN_HOLD_MS);
-      return;
-    }
-    showSpinFace(students[Math.floor(Math.random()*students.length)]);
-    soundTick();
-    elapsed += delay;
-    delay = delay * 1.17 + 3;                  /* lúc đầu chạy rất nhanh, càng về sau càng chậm */
-    setTimeout(step, delay);
+  var idx = buildReel(target);
+  /* Bề ngang thật của một ô, kèm cả phần lẻ sau dấu phẩy: lấy số nguyên thì mỗi
+     ô lệch một chút, cộng dồn hơn hai chục ô sẽ dừng không khớp khuôn mặt.
+     Đọc theo width tính toán chứ không đo trên màn hình, vì lúc này vòng quay
+     đang phóng to dần nên số đo trên màn hình còn nhỏ hơn thật. */
+  var oRong = parseFloat(window.getComputedStyle(spinReel).width) || spinPhoto.clientWidth;
+  spinReel.style.transition = 'none';
+  spinReel.style.transform  = 'translate3d(0,0,0)';
+  void spinReel.offsetWidth;                  /* ép trình duyệt nhận mốc xuất phát */
+  spinReel.style.transition = 'transform ' + SPIN_MS + 'ms ' + SPIN_EASE;
+  spinReel.style.transform  = 'translate3d(' + (-idx * oRong) + 'px,0,0)';
+  keuTichTac(oRong);
+
+  var daDung = false;
+  function dung(){
+    if(daDung) return;
+    daDung = true;
+    currentStudent = target;
+    spinHead.textContent = 'Xin mời bạn';
+    spinOverlay.classList.add('landed');
+    soundPick();
+    playStudentName(target);                 /* gọi tên bạn vừa trúng */
+    setTimeout(function(){                   /* giữ mặt to cho cả lớp nhìn rõ */
+      spinOverlay.classList.remove('show');
+      spinning = false;
+      spinBox.classList.add('playing');
+      spinBox.classList.remove('cho-quay');
+      if(itemsBox) itemsBox.classList.remove('cho-quay');
+      choBamQuay = false;
+      turnImg.src = STUDENT_DIR + target.file;
+      turnName.textContent = target.name || '';
+      if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
+    }, SPIN_HOLD_MS);
   }
-  step();
+  spinReel.addEventListener('transitionend', dung, {once:true});
+  setTimeout(dung, SPIN_MS + 120);           /* phòng khi trình duyệt không báo */
 }
 
 function startStudentGame(){
