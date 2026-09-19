@@ -187,7 +187,7 @@
   /* cỡ ảnh do fitTray() trong js/game.js tính theo chỗ trống thật của màn hình */
   .card .icon-wrap{ width:var(--mon, 68px); height:var(--mon, 68px); }
   .card .icon-wrap img{ width:100%; height:100%; object-fit:contain; display:block; pointer-events:none; }
-  .card p{ font-size:clamp(15px, 1.1vw, 23px); margin:0; color:var(--teal); font-weight:600; line-height:1.15; }
+  .card p{ font-size:clamp(17px, 1.35vw, 28px); margin:0; color:var(--teal); font-weight:700; line-height:1.15; }
   .card.shake{ animation: shake .4s ease; }
   @keyframes shake{
     0%,100%{ transform:translateX(0); }

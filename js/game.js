@@ -81,7 +81,7 @@ function iconSrc(id){ return ICON_DIR + id + '.png'; }
 var items = [
   {id:'suachua', label:'Sữa chua', cat:'fridge', khay:0.85, spot:{left:'52%', bottom:'63%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
   {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, to:1.56, spot:{left:'52%', bottom:'75%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
-  {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'52%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
+  {id:'bongcai', label:'Bông cải', cat:'fridge', spot:{left:'52%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
   {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:true,
    why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
@@ -218,7 +218,7 @@ function fitTray(){
   var hang = Math.ceil(the.length / TRAY_COT);
   var khe = parseFloat(window.getComputedStyle(khay).rowGap) || 0;
   var anh = (conLai - khungKhay - (hang - 1) * khe) / hang - vien;
-  anh = Math.min(anh, the[0].clientWidth * 0.78);         /* đừng rộng quá bề ngang thẻ */
+  anh = Math.min(anh, the[0].clientWidth * 0.70);         /* chừa chỗ hai bên cho tên món */
   anh = Math.max(TRAY_ANH_MIN, Math.floor(anh));
   khay.style.setProperty('--mon', anh + 'px');
 
