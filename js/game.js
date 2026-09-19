@@ -83,12 +83,21 @@ var items = [
   {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, spot:{left:'45%', bottom:'79%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'45%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
-  {id:'dauan', label:'Dầu ăn', cat:'spice', bigBadge:true, why:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.'},
-  {id:'tieu', label:'Hũ tiêu', cat:'spice', why:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.'},
+  {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:{spice:true},
+   spot:{cabinet:{left:'40%', bottom:'8%'}},
+   why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
+        cabinet:'Cất vào kệ tủ cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
+  {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'],
+   spot:{cabinet:{left:'62%', bottom:'8%'}},
+   why:{spice:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.',
+        cabinet:'Cất vào kệ tủ cũng đúng, chỗ kín và khô thì tiêu giữ được mùi thơm.'}},
 
   {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
-  {id:'chen', label:'Chén', cat:'cabinet', spot:{left:'6%',  bottom:'49%'}, why:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'},
+  {id:'chen', label:'Chén', cat:['dishrack','cabinet'],
+   spot:{dishrack:{left:'24%', bottom:'6%'}, cabinet:{left:'6%', bottom:'49%'}},
+   why:{dishrack:'Chén vừa rửa xong thì úp lên kệ chén cho ráo nước đã.',
+        cabinet:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'}},
 
   {id:'racgiay', label:'Giấy bẩn', cat:'trash', why:'Giấy bẩn có nhiều vi khuẩn, phải bỏ ngay vào thùng rác.'},
   {id:'vochuoi', label:'Vỏ chuối', cat:'trash', why:'Vỏ chuối là rác. Để lâu sẽ thu hút ruồi và có mùi hôi.'}
@@ -99,7 +108,27 @@ var items = [
    vừa đúng 3 hàng đầy, thẻ to nhất và không thừa chỗ trống. */
 items = items.filter(function(mon){ return !mon.an; });
 
-var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Kệ tủ', trash:'Sọt rác'};
+var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Kệ tủ',
+                trash:'Sọt rác', dishrack:'Kệ chén'};
+
+/* Một món có thể cất đúng ở nhiều nơi: viết cat:['spice','cabinet'] là cả hai
+   chỗ đều được tính đúng. Ba hàm dưới đây lo việc đó, để phần còn lại của trò
+   chơi cứ hỏi "món này với chỗ này thì sao" mà không phải bận tâm một hay hai
+   chỗ. Các món cũ vẫn viết cat:'fridge' như thường. */
+function catList(item){
+  return item && item.cat ? (item.cat.push ? item.cat : [item.cat]) : [];
+}
+function catDung(item, cat){
+  return catList(item).indexOf(cat) >= 0;
+}
+/* spot và why viết được hai kiểu: một giá trị dùng chung cho mọi nơi, hoặc
+   tách riêng từng nơi, ví dụ why:{spice:'...', cabinet:'...'} */
+function theoNoi(giaTri, cat, mac){
+  if(giaTri === undefined || giaTri === null) return mac;
+  if(typeof giaTri !== 'object') return giaTri;      /* một giá trị dùng chung */
+  if(giaTri[cat] !== undefined) return giaTri[cat];
+  return giaTri.left !== undefined ? giaTri : mac;   /* spot chung cho mọi nơi */
+}
 
 /* Mở trang kèm ?test=true thì chỉ giữ lại một món ngẫu nhiên, để chạy thử nhanh
    trọn luồng chơi (quay số, hộp thoại, màn chiến thắng) mà không phải kéo hết. */
@@ -112,7 +141,7 @@ if(/[?&]test=(true|1)(&|$)/i.test(location.search)){
 var XEM_KET_QUA = /[?&]result=(true|1)(&|$)/i.test(location.search);
 
 var sceneCol = document.querySelector('.scene-col');
-var BG_W = 1136, BG_H = 939;
+var BG_W = 1152, BG_H = 919;
 function layoutScene(){
   var stage = document.querySelector('.stage');
   var inner = stage.clientWidth - 36 - 18;   // padding hai bên + khoảng cách giữa 2 cột
@@ -583,7 +612,7 @@ function closeDialog(){
 /* hộp thoại chỉ tự tắt theo thời gian, bấm vào đâu cũng không tắt,
    để học sinh không lỡ tay làm mất câu giải thích */
 
-function showResultDialog(item, ok, wrongCat, after){
+function showResultDialog(item, ok, noiTha, after){
   if(!dialogEl){ if(after) after(); return; }
   if(dialogTimer) clearTimeout(dialogTimer);
   dialogAfter = after;
@@ -598,8 +627,8 @@ function showResultDialog(item, ok, wrongCat, after){
   if(dialogGirl) dialogGirl.src = ok ? GIRL_OK : GIRL_NO;
   dialogImg.style.transform = item.zoom ? 'scale(' + item.zoom + ')' : '';
   dialogText.textContent = ok
-    ? item.why
-    : item.label + ' không cất ở ' + (CAT_NAME[wrongCat] || 'chỗ này') + ' đâu. Em thử nghĩ lại xem nên cất ở đâu nhé!';
+    ? theoNoi(item.why, noiTha, '')
+    : item.label + ' không cất ở ' + (CAT_NAME[noiTha] || 'chỗ này') + ' đâu. Em thử nghĩ lại xem nên cất ở đâu nhé!';
 
   dialogEl.classList.add('show');
 
@@ -781,7 +810,7 @@ function tryPlace(id, zoneEl){
   var cardEl = document.getElementById('card-' + id);
   var cat = zoneEl.dataset.cat;
 
-  var ok = (item.cat === cat);
+  var ok = catDung(item, cat);
   /* ghi kết quả TRƯỚC khi cất món, để lượt cuối cùng kịp vào bảng tổng kết */
   recordResult(ok);
 
@@ -790,11 +819,12 @@ function tryPlace(id, zoneEl){
     zoneEl.classList.add('correct-flash');
     setTimeout(function(){ zoneEl.classList.remove('correct-flash'); }, 500);
     var badge = document.createElement('div');
-    badge.className = item.bigBadge ? 'placed-badge big' : 'placed-badge';
-    if(item.spot){                      /* món có chỗ đứng riêng trong ngăn */
+    badge.className = theoNoi(item.bigBadge, cat, false) ? 'placed-badge big' : 'placed-badge';
+    var cho = theoNoi(item.spot, cat, null);
+    if(cho){                            /* món có chỗ đứng riêng trong ngăn */
       badge.style.position = 'absolute';
-      badge.style.left = item.spot.left;
-      badge.style.bottom = item.spot.bottom;
+      badge.style.left = cho.left;
+      badge.style.bottom = cho.bottom;
     }
     badge.innerHTML = '<img src="' + iconSrc(item.id) + '" alt="">';
     zoneEl.querySelector('.placed-badges').appendChild(badge);

@@ -25,8 +25,10 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
 ==============================================================================
 
 1.1 MÀN HÌNH CHÍNH
-  Bên trái là khung bếp với 4 nơi cất giữ, viền nét đứt:
-      Tủ lạnh - Kệ tủ - Kệ gia vị - Sọt rác
+  Bên trái là khung bếp với 5 nơi cất giữ, viền nét đứt:
+      Tủ lạnh - Kệ tủ - Kệ gia vị - Kệ chén - Sọt rác
+  Một số món cất ở hai nơi đều đúng: chén (kệ chén hoặc kệ tủ), dầu ăn và hũ
+  tiêu (kệ gia vị hoặc kệ tủ). Lời giải thích đổi theo nơi học sinh chọn.
   Bên phải, từ trên xuống:
       - Tên trò chơi và 2 dòng luật chơi
       - Khay 9 món cần cất giữ, xáo trộn ngẫu nhiên mỗi lần mở trang,
@@ -142,14 +144,27 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
       id     Tên món, phải trùng tên file ảnh trong images/items/ và tên file
              giọng trong voice/correct/
       label  Chữ hiện dưới ảnh trong khay
-      cat    Nơi cất đúng, nhận 1 trong 4 giá trị:
+      cat    Nơi cất đúng, nhận 1 trong 5 giá trị:
              fridge (Tủ lạnh), spice (Kệ gia vị), cabinet (Kệ tủ),
-             trash (Sọt rác)
+             dishrack (Kệ chén), trash (Sọt rác)
       why    Câu giải thích hiện trong hộp thoại khi cất đúng
       spot   Không bắt buộc. Chỗ đứng riêng của món trong ngăn, tính theo phần
              trăm: left là mép trái, bottom là khoảng cách tới đáy ngăn
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
       bigBadge  Không bắt buộc. Món cao như chai thì hiện to gấp đôi trong ngăn
+
+  MỘT MÓN CẤT ĐƯỢC Ở HAI NƠI
+  Viết cat thành danh sách là cả hai nơi đều tính đúng:
+
+      {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'],
+       spot:{cabinet:{left:'62%', bottom:'8%'}},
+       why:{spice:'Tiêu để kệ gia vị...', cabinet:'Cất vào kệ tủ cũng đúng...'}},
+
+  Khi đó why, spot và bigBadge viết được hai kiểu:
+      - một giá trị dùng chung cho mọi nơi, như các món chỉ có một nơi
+      - hoặc tách riêng từng nơi như ví dụ trên, nơi nào không ghi thì bỏ qua
+  Nhờ vậy chai dầu ăn đứng to trên kệ gia vị nhưng vào kệ tủ thì nhỏ lại cho
+  vừa chiều cao ngăn.
       an     Không bắt buộc. Thêm an:true là TẠM CẤT món đó đi, món vẫn nằm
              nguyên trong file, bỏ chữ an:true là hiện lại. Hộp cà phê đang
              để an:true
@@ -193,9 +208,12 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
   vào danh sách VOICE_NO_CHUNG trong js/game.js.
   Nên cắt bỏ đoạn im lặng ở đầu file, nếu không nghe sẽ thấy khựng một nhịp.
 
-3.5 ĐỔI VỊ TRÍ 4 NƠI CẤT GIỮ
+3.5 ĐỔI VỊ TRÍ 5 NƠI CẤT GIỮ
   Mở index.html, sửa thuộc tính style (left/top/width/height) của các thẻ
   .dropzone. Tất cả tính theo phần trăm của ảnh bếp nên không lệ thuộc màn hình.
+
+  Nếu thay ảnh bếp khác: nhớ sửa BG_W và BG_H ở đầu js/game.js cho khớp chiều
+  ngang và chiều cao ảnh mới, rồi dóng lại 5 khung nét đứt cho trùng đồ đạc.
 
 3.6 ĐỔI CÁC MỐC THỜI GIAN
   Nằm ở đầu js/game.js, đơn vị mili giây (1000 = 1 giây):

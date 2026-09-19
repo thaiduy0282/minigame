@@ -49,6 +49,11 @@
   .placed-badges{ overflow:hidden; }
   /* sọt rác hẹp nên đẩy nhãn sang trái cho nằm gọn trên thùng rác */
   .dropzone.trash .zone-label{ margin-left:-16%; }
+  /* rác rơi đúng vào miệng thùng chứ không lơ lửng phía trên */
+  .dropzone.trash .placed-badges{
+    position:absolute; top:41%; left:6%; right:6%; margin-top:0;
+    justify-content:center;
+  }
   .dropzone .zone-label{
     display:inline-block;
     font-weight:800; font-size:29px; color:var(--white);
@@ -63,6 +68,8 @@
   .dropzone.spice .zone-label{ background:#E09A1B; }
   .dropzone.cabinet{ background:rgba(232,131,122,0.14); }
   .dropzone.cabinet .zone-label{ background:#E0837A; }
+  .dropzone.dishrack{ background:rgba(111,168,63,0.16); }
+  .dropzone.dishrack .zone-label{ background:#5F9636; }
 
   .dropzone.hover{ border-color:var(--sun); background-color:rgba(255,200,69,0.34); }
   .dropzone.correct-flash{ border-color:#3FAE6A; background-color:rgba(63,174,106,0.38); }
@@ -74,11 +81,14 @@
   .dropzone.cabinet .placed-badges{
     position:absolute; inset:0; margin:0; display:block;
   }
-  /* kệ gia vị: hạ đồ xuống cho đứng trên mặt kệ dưới */
-  .dropzone.spice .placed-badges{
+  /* kệ gia vị và kệ chén: hạ đồ xuống cho đứng trên mặt kệ dưới */
+  .dropzone.spice .placed-badges,
+  .dropzone.dishrack .placed-badges{
     position:absolute; bottom:7%; left:4%; right:4%; margin-top:0;
     align-items:flex-end;
   }
+  /* kệ chén hẹp nên kéo nhãn sang trái cho khỏi đè lên kệ gia vị */
+  .dropzone.dishrack .zone-label{ margin-left:-6%; }
   .placed-badge{
     background:rgba(255,255,255,0.95); border-radius:11px; padding:3px;
     box-shadow:0 2px 6px rgba(0,0,0,0.22);

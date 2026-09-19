@@ -15,7 +15,7 @@ var students = [
   {file:'IMG_5324.jpg', name:'Thiện Nhân'},
   {file:'IMG_5325.jpg', name:'Phúc Thịnh'},
   {file:'IMG_5326.jpg', name:'Ngọc Tâm'},
-  {file:'IMG_5327.jpg', name:'Hiếu Vy'},
+  {file:'IMG_5327.jpg', name:'Hiểu Vy'},
   {file:'IMG_5328.jpg', name:'Gia Phú'},
   {file:'IMG_5329.jpg', name:'Nhật Minh'},
   {file:'IMG_5330.jpg', name:'Bảo Hân'},
