@@ -48,11 +48,13 @@ function soundWin(delay){
 }
 
 function soundTick(){
-  playTone(1250, 0, 0.035, 'square', 0.07);
+  playTone(1250, 0, 0.04, 'square', 0.17);
 }
+/* tiếng "ting" lúc chốt tên: hai nốt đi lên, ngân dài cho cả lớp nghe rõ */
 function soundPick(){
-  playTone(880, 0, 0.13, 'sine', 0.28);
-  playTone(1320, 0.11, 0.34, 'sine', 0.26);
+  playTone(880, 0, 0.15, 'sine', 0.5);
+  playTone(1320, 0.11, 0.45, 'sine', 0.46);
+  playTone(1760, 0.14, 0.5, 'sine', 0.2);
 }
 
 /* ============ DỮ LIỆU ============ */
@@ -158,9 +160,14 @@ var startBtn    = document.getElementById('start-btn');
 var respinBtn   = document.getElementById('respin-btn');
 
 var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu nhỏ */
-var SPIN_MS      = 2800;      /* dải ảnh chạy bao lâu rồi dừng hẳn */
+var SPIN_MS      = 1900;      /* chặng đầu: dải ảnh lao nhanh rồi chậm dần */
+var SPIN_TAIL_MS = 1500;      /* chặng cuối: bò thật chậm cho hồi hộp */
+var SPIN_TAIL_O  = 2;         /* bò chậm qua mấy khuôn mặt cuối */
 var SPIN_TILES   = 22;        /* bao nhiêu khuôn mặt lướt qua trước khi dừng */
-var SPIN_EASE    = 'cubic-bezier(.09,.79,.16,1)';   /* lao rất nhanh rồi từ từ đứng lại */
+/* Hai đường cong được chọn sao cho tốc độ lúc giao nhau gần bằng nhau, nên mắt
+   thấy một mạch liền: lao vút - chậm dần - bò từng khuôn mặt - đứng hẳn. */
+var SPIN_EASE      = 'cubic-bezier(.15,.55,.6,.9)';
+var SPIN_TAIL_EASE = 'cubic-bezier(.25,.5,.45,1)';
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
 var gameStarted = false;    /* đã bấm "Bắt đầu" chưa - trước đó cô chơi thử tự do */
 var spinning = false;       /* đang quay thì khoá khay đồ */
@@ -271,9 +278,20 @@ function spinForNextStudent(){
   spinReel.style.transition = 'none';
   spinReel.style.transform  = 'translate3d(0,0,0)';
   void spinReel.offsetWidth;                  /* ép trình duyệt nhận mốc xuất phát */
+  var oCuoi = Math.min(SPIN_TAIL_O, idx);     /* mấy ô để dành cho chặng bò chậm */
   spinReel.style.transition = 'transform ' + SPIN_MS + 'ms ' + SPIN_EASE;
-  spinReel.style.transform  = 'translate3d(' + (-idx * oRong) + 'px,0,0)';
+  spinReel.style.transform  = 'translate3d(' + (-(idx - oCuoi) * oRong) + 'px,0,0)';
   keuTichTac(oRong);
+
+  var daBo = false;
+  function boCham(){                          /* sang chặng cuối: lết từng khuôn mặt */
+    if(daBo) return;
+    daBo = true;
+    spinReel.style.transition = 'transform ' + SPIN_TAIL_MS + 'ms ' + SPIN_TAIL_EASE;
+    spinReel.style.transform  = 'translate3d(' + (-idx * oRong) + 'px,0,0)';
+    spinReel.addEventListener('transitionend', dung, {once:true});
+    setTimeout(dung, SPIN_TAIL_MS + 120);
+  }
 
   var daDung = false;
   function dung(){
@@ -296,8 +314,8 @@ function spinForNextStudent(){
       if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
     }, SPIN_HOLD_MS);
   }
-  spinReel.addEventListener('transitionend', dung, {once:true});
-  setTimeout(dung, SPIN_MS + 120);           /* phòng khi trình duyệt không báo */
+  spinReel.addEventListener('transitionend', boCham, {once:true});
+  setTimeout(boCham, SPIN_MS + 120);         /* phòng khi trình duyệt không báo */
 }
 
 function startStudentGame(){

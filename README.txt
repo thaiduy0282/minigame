@@ -53,10 +53,11 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
   - Mới mở trang: cô kéo thử vài món cho cả lớp xem, chưa quay số.
     Lượt chơi thử này không bị tính vào bảng tổng kết.
   - Bấm "Bắt đầu quay số": cả màn hình mờ đi, hiện một vòng tròn lớn có dải
-    ảnh các bạn trượt ngang như máy quay số, lao rất nhanh rồi chậm dần và
-    dừng đúng giữa khuôn mặt một bạn sau khoảng 2,8 giây. Viền ảnh chuyển
-    sang vàng, hiện tên và đọc tên bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ
-    về ô bên phải.
+    ảnh các bạn trượt ngang như máy quay số. Dải ảnh lao rất nhanh rồi chậm
+    dần (1,9 giây), sau đó bò thật chậm qua hai khuôn mặt cuối cho hồi hộp
+    (1,5 giây) và dừng đúng giữa khuôn mặt một bạn. Viền ảnh chuyển sang
+    vàng, hiện tên và đọc tên bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ về ô
+    bên phải.
   - Bạn được mời tự chọn món bất kỳ trong khay và cất.
   - Cất xong, trò chơi DỪNG LẠI chờ cô: khay đồ mờ đi và hiện dòng
     "Hết lượt rồi - Bấm Quay tiếp để mời bạn khác".
@@ -191,7 +192,9 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
 3.6 ĐỔI CÁC MỐC THỜI GIAN
   Nằm ở đầu js/game.js, đơn vị mili giây (1000 = 1 giây):
 
-      SPIN_MS           2800   Dải ảnh chạy bao lâu rồi dừng hẳn
+      SPIN_MS           1900   Chặng chạy nhanh của dải ảnh
+      SPIN_TAIL_MS      1500   Chặng bò chậm cuối cùng, tăng cho hồi hộp hơn
+      SPIN_TAIL_O          2   Bò chậm qua mấy khuôn mặt cuối
       SPIN_TILES          22   Bao nhiêu khuôn mặt lướt qua trước khi dừng
       SPIN_HOLD_MS      3500   Giữ khuôn mặt to sau khi quay trúng
       DIALOG_MS         3000   Hộp thoại mở tối thiểu bao lâu
