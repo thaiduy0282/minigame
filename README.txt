@@ -151,7 +151,8 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
       spot   Không bắt buộc. Chỗ đứng riêng của món trong ngăn, tính theo phần
              trăm: left là mép trái, bottom là khoảng cách tới đáy ngăn
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
-      bigBadge  Không bắt buộc. Món cao như chai thì hiện to gấp đôi trong ngăn
+      bigBadge  Không bắt buộc. bigBadge:true là món hiện to gấp đôi (chai cao
+             đứng trên kệ hở), bigBadge:'vua' là cỡ vừa cho ngăn thấp như kệ tủ
 
   MỘT MÓN CẤT ĐƯỢC Ở HAI NƠI
   Viết cat thành danh sách là cả hai nơi đều tính đúng:

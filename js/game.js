@@ -83,7 +83,7 @@ var items = [
   {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, spot:{left:'45%', bottom:'79%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'45%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
-  {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:{spice:true},
+  {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:{spice:true, cabinet:'vua'},
    spot:{cabinet:{left:'40%', bottom:'8%'}},
    why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
         cabinet:'Cất vào kệ tủ cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
@@ -819,7 +819,10 @@ function tryPlace(id, zoneEl){
     zoneEl.classList.add('correct-flash');
     setTimeout(function(){ zoneEl.classList.remove('correct-flash'); }, 500);
     var badge = document.createElement('div');
-    badge.className = theoNoi(item.bigBadge, cat, false) ? 'placed-badge big' : 'placed-badge';
+    /* bigBadge:true là cỡ to, bigBadge:'vua' là cỡ vừa cho ngăn thấp */
+    var coTo = theoNoi(item.bigBadge, cat, false);
+    badge.className = 'placed-badge' +
+      (coTo === true ? ' big' : (coTo ? ' ' + coTo : ''));
     var cho = theoNoi(item.spot, cat, null);
     if(cho){                            /* món có chỗ đứng riêng trong ngăn */
       badge.style.position = 'absolute';

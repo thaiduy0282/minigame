@@ -76,19 +76,19 @@
   .dropzone.wrong-flash{ border-color:var(--coral-deep); background-color:rgba(232,83,71,0.38); }
 
   .placed-badges{ display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-  /* tủ lạnh và kệ tủ: mỗi món đứng đúng ngăn riêng (toạ độ ghi trong game.js) */
+  /* tủ lạnh, kệ tủ, kệ chén: mỗi món đứng đúng chỗ riêng (toạ độ trong game.js) */
   .dropzone.fridge .placed-badges,
-  .dropzone.cabinet .placed-badges{
+  .dropzone.cabinet .placed-badges,
+  .dropzone.dishrack .placed-badges{
     position:absolute; inset:0; margin:0; display:block;
   }
-  /* kệ gia vị và kệ chén: hạ đồ xuống cho đứng trên mặt kệ dưới */
-  .dropzone.spice .placed-badges,
-  .dropzone.dishrack .placed-badges{
+  /* kệ gia vị: hạ đồ xuống cho đứng trên mặt kệ dưới */
+  .dropzone.spice .placed-badges{
     position:absolute; bottom:7%; left:4%; right:4%; margin-top:0;
     align-items:flex-end;
   }
-  /* kệ chén hẹp nên kéo nhãn sang trái cho khỏi đè lên kệ gia vị */
-  .dropzone.dishrack .zone-label{ margin-left:-6%; }
+  /* 3. nhãn kệ chén nhô lên khỏi mép giá cho khỏi đè lên chỗ úp chén */
+  .dropzone.dishrack .zone-label{ margin-left:-6%; margin-top:-0.95em; }
   .placed-badge{
     background:rgba(255,255,255,0.95); border-radius:11px; padding:3px;
     box-shadow:0 2px 6px rgba(0,0,0,0.22);
@@ -100,6 +100,12 @@
     border-radius:16px; padding:5px;
   }
   .placed-badge.big img{ width:auto; height:100%; }
+  /* cỡ vừa: cho món cao đứng trong ngăn thấp, cao hơn cỡ thường nhưng vẫn lọt ngăn */
+  .placed-badge.vua{
+    width:auto; height:clamp(46px, 6.9vh, 78px);
+    border-radius:14px; padding:4px;
+  }
+  .placed-badge.vua img{ width:auto; height:100%; }
   .placed-badge img{ width:100%; height:100%; object-fit:contain; display:block; }
 
   /* ---------- Right column: two boxes ---------- */
