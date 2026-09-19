@@ -50,7 +50,7 @@
   }
   .game-name h1{
     margin:7px 0 0; font-weight:800; line-height:1.15; color:var(--teal);
-    font-size:clamp(21px, 3.4vh, 44px);
+    font-size:clamp(27px, 4.4vh, 57px);
   }
 
   .dropzone{
@@ -136,7 +136,7 @@
 
   .game-tag{
     display:inline-block; background:#3E7368; color:var(--white);
-    font-weight:800; letter-spacing:1px; font-size:clamp(11px, 1.6vh, 19px);
+    font-weight:800; letter-spacing:1px; font-size:clamp(14px, 2.1vh, 25px);
     padding:0.4em 1.2em; border-radius:999px;
     box-shadow:var(--shadow-soft);
   }
@@ -156,8 +156,8 @@
 
   /* bằng cỡ nhãn các nơi cất giữ trong bếp cho đồng bộ */
   .items-head{
-    font-size:29px; font-weight:800; color:var(--teal);
-    text-align:center; flex:0 0 auto; margin-bottom:10px;
+    font-size:38px; font-weight:800; color:var(--teal);
+    text-align:center; flex:0 0 auto; margin-bottom:22px;
   }
   .tray{
     flex:1 1 auto; min-height:0; overflow:auto;
@@ -200,7 +200,7 @@
   @media (max-width:1600px){
     .progress-pill{ font-size:16.5px; padding:6px 13px; }
     .btn{ font-size:14.5px; padding:6px 11px; }
-    .items-head{ font-size:21px; margin-bottom:7px; }
+    .items-head{ font-size:27px; margin-bottom:15px; }
     .card{ width:calc((100% - 20px) / 3); border-radius:14px; padding:6px 4px 5px; gap:2px; }
     .card p{ line-height:1.15; }
     .tray{ gap:10px; }
