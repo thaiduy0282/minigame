@@ -79,14 +79,14 @@ function iconSrc(id){ return ICON_DIR + id + '.png'; }
 
 /* why = câu giải thích ngắn hiện trong hộp thoại khi cất đúng */
 var items = [
-  {id:'suachua', label:'Sữa chua', cat:'fridge', spot:{left:'52%', bottom:'63%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
+  {id:'suachua', label:'Sữa chua', cat:'fridge', khay:0.85, spot:{left:'52%', bottom:'63%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
   {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, to:1.56, spot:{left:'52%', bottom:'75%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'52%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
   {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:true,
    why:{spice:'Dầu ăn để ở kệ gia vị nơi khô ráo, gần bếp cho tiện nấu ăn.',
         cabinet:'Cất vào kệ tủ cũng đúng, vì trong tủ khô ráo và tránh được nắng.'}},
-  {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'],
+  {id:'tieu', label:'Hũ tiêu', cat:['spice','cabinet'], khay:0.9,
    why:{spice:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.',
         cabinet:'Cất vào kệ tủ cũng đúng, chỗ kín và khô thì tiêu giữ được mùi thơm.'}},
 
@@ -718,8 +718,11 @@ function findItem(id){
 }
 
 /* vài món có hình dẹt hoặc hẹp nên trông nhỏ hơn, dùng zoom để phóng cho cân */
+/* Cỡ ảnh trong khay: zoom là cỡ chung (dùng cho cả hộp thoại kết quả), còn
+   khay là chỉnh riêng cho khay, ví dụ khay:0.85 là thu nhỏ 15%. */
 function zoomStyle(item){
-  return item.zoom ? ' style="transform:scale(' + item.zoom + ')"' : '';
+  var n = (item.zoom || 1) * (item.khay || 1);
+  return n !== 1 ? ' style="transform:scale(' + n + ')"' : '';
 }
 
 function makeCard(item){

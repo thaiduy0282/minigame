@@ -43,7 +43,11 @@
 
   /* Tên trò chơi nằm ngay trên mảng tường trống góc trái, nhường cả cột phải
      cho khay đồ. */
-  .game-name{ position:absolute; left:3.5%; top:3%; text-align:left; }
+  .game-name{
+    position:absolute; left:3%; top:3.5%; text-align:left;
+    background:rgba(255,255,255,0.88); border-radius:18px;
+    padding:11px 22px 13px; box-shadow:var(--shadow);
+  }
   .game-name h1{
     margin:7px 0 0; font-weight:800; line-height:1.15; color:var(--teal);
     font-size:clamp(21px, 3.4vh, 44px);
@@ -150,8 +154,9 @@
   }
   .btn.off{ background:#D9E4E1; color:#7D8F8B; }
 
+  /* bằng cỡ nhãn các nơi cất giữ trong bếp cho đồng bộ */
   .items-head{
-    font-size:20px; font-weight:700; color:var(--teal);
+    font-size:29px; font-weight:800; color:var(--teal);
     text-align:center; flex:0 0 auto; margin-bottom:10px;
   }
   .tray{
@@ -195,7 +200,7 @@
   @media (max-width:1600px){
     .progress-pill{ font-size:16.5px; padding:6px 13px; }
     .btn{ font-size:14.5px; padding:6px 11px; }
-    .items-head{ font-size:14.5px; margin-bottom:7px; }
+    .items-head{ font-size:21px; margin-bottom:7px; }
     .card{ width:calc((100% - 20px) / 3); border-radius:14px; padding:6px 4px 5px; gap:2px; }
     .card p{ line-height:1.15; }
     .tray{ gap:10px; }

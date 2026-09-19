@@ -157,8 +157,11 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              không có spot nên xếp ngang ở ngăn dưới
       xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
              xoay:{dishrack:180} là úp ngược khi vào kệ chén
-      zoom   Không bắt buộc. Phóng to ảnh trong hộp thoại kết quả, ví dụ
-             zoom:1.10 là thêm 10%
+      zoom   Không bắt buộc. Cỡ ảnh trong khay và trong hộp thoại kết quả,
+             ví dụ zoom:1.10 là to thêm 10%
+      khay   Không bắt buộc. Chỉnh riêng cỡ ảnh TRONG KHAY, không đụng tới
+             hộp thoại. khay:0.85 là nhỏ đi 15%. Sữa chua đang để 0.85,
+             hũ tiêu 0.9
       to     Không bắt buộc. Phóng to món SAU KHI đã cất vào bếp, ví dụ to:1.3
              là thêm 30%. Khay thịt bò đang dùng to:1.3
       bigBadge  Không bắt buộc. Món cao như chai dầu thì hiện cao hơn món
