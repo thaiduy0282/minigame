@@ -149,9 +149,11 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              dishrack (Kệ chén), trash (Sọt rác)
       why    Câu giải thích hiện trong hộp thoại khi cất đúng
       spot   Không bắt buộc. Chỗ đứng riêng của món, tính theo phần trăm:
-             left là mép trái, bottom là khoảng cách tới đáy ngăn. Chỉ tủ lạnh
-             và kệ chén dùng toạ độ riêng; kệ tủ, kệ gia vị và sọt rác thì món
-             tự xếp từ trái sang theo thứ tự kéo vào
+             left là mép trái, bottom là khoảng cách tới đáy ngăn. Món KHÔNG
+             ghi spot cho nơi đó thì tự xếp ngang theo thứ tự kéo vào, kéo
+             trước đứng trái. Hai kiểu dùng chung một nơi được: trong kệ tủ,
+             chén có spot nên đứng riêng ngăn trên, còn mì gói, dầu ăn, hũ tiêu
+             không có spot nên xếp ngang ở ngăn dưới
       xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
              xoay:{dishrack:180} là úp ngược khi vào kệ chén
       zoom   Không bắt buộc. Phóng to ảnh trong hộp thoại kết quả, ví dụ

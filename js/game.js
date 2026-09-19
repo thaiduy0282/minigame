@@ -79,8 +79,8 @@ function iconSrc(id){ return ICON_DIR + id + '.png'; }
 
 /* why = câu giải thích ngắn hiện trong hộp thoại khi cất đúng */
 var items = [
-  {id:'suachua', label:'Sữa chua', cat:'fridge', spot:{left:'52%', bottom:'65%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
-  {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, to:1.3, spot:{left:'52%', bottom:'79%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
+  {id:'suachua', label:'Sữa chua', cat:'fridge', spot:{left:'52%', bottom:'61%'}, why:'Sữa chua phải để lạnh. Để ngoài trời nóng sẽ bị hỏng, ăn vào dễ đau bụng.'},
+  {id:'thitbo', label:'Thịt bò', cat:'fridge', zoom:1.10, to:1.56, spot:{left:'52%', bottom:'75%'}, why:'Thịt tươi để ngoài sẽ ôi thiu và có vi khuẩn. Cất tủ lạnh mới an toàn.'},
   {id:'bongcai', label:'Bông cải xanh', cat:'fridge', spot:{left:'52%', bottom:'50%'}, why:'Rau xanh để tủ lạnh giữ được màu tươi và chất bổ.'},
 
   {id:'dauan', label:'Dầu ăn', cat:['spice','cabinet'], bigBadge:true,
@@ -93,7 +93,7 @@ var items = [
   {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
   {id:'chen', label:'Chén', cat:['dishrack','cabinet'],
-   spot:{dishrack:{left:'36%', bottom:'36%'}},
+   spot:{dishrack:{left:'36%', bottom:'36%'}, cabinet:{left:'8%', bottom:'48%'}},
    why:{dishrack:'Chén vừa rửa xong thì úp lên kệ chén cho ráo nước đã.',
         cabinet:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'}},
 
@@ -830,7 +830,18 @@ function tryPlace(id, zoneEl){
     var xoay = theoNoi(item.xoay, cat, 0);        /* chén úp xuống khi vào kệ chén */
     badge.innerHTML = '<img src="' + iconSrc(item.id) + '" alt=""' +
       (xoay ? ' style="transform:rotate(' + xoay + 'deg)"' : '') + '>';
-    zoneEl.querySelector('.placed-badges').appendChild(badge);
+    var hop = zoneEl.querySelector('.placed-badges');
+    if(cho){
+      hop.appendChild(badge);                     /* món có toạ độ riêng */
+    } else {                                      /* còn lại xếp ngang theo thứ tự */
+      var hang = hop.querySelector('.hang');
+      if(!hang){
+        hang = document.createElement('div');
+        hang.className = 'hang';
+        hop.appendChild(hang);
+      }
+      hang.appendChild(badge);
+    }
     if(cardEl) cardEl.remove();
     correctCount++;
     updateProgress();
