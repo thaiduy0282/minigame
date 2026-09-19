@@ -83,7 +83,7 @@
   }
   /* kệ tủ: món tự xếp trên mặt kệ dưới, kéo trước đứng trái, kéo sau đứng kế bên */
   .dropzone.cabinet .placed-badges{
-    position:absolute; bottom:5%; left:5%; right:5%; margin-top:0;
+    position:absolute; bottom:1%; left:5%; right:5%; margin-top:0;
     justify-content:flex-start; align-items:flex-end; gap:9px;
   }
   /* kệ gia vị: hạ đồ xuống cho đứng trên mặt kệ dưới */
@@ -92,7 +92,7 @@
     align-items:flex-end;
   }
   /* 3. nhãn kệ chén nhô lên khỏi mép giá cho khỏi đè lên chỗ úp chén */
-  .dropzone.dishrack .zone-label{ margin-left:-6%; margin-top:-1.75em; }
+  .dropzone.dishrack .zone-label{ margin-left:0; margin-top:0; }
   /* Món đã cất chỉ hiện ảnh, không có thẻ trắng phía sau, cho giống như món
      nằm thật trong bếp. Đổ bóng nhẹ để món không lẫn vào tranh nền. */
   .placed-badge{
@@ -100,16 +100,13 @@
     width:52px; height:52px;
   }
   .placed-badge img{ filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35)); }
-  /* món cao: ô đựng ôm sát bề ngang ảnh, cao theo màn hình để không đụng nhãn ngăn */
+  /* Món cao như chai dầu: ô đựng ôm sát bề ngang ảnh. Chiều cao lấy theo khe
+     hẹp nhất mà nó phải lọt - khoảng giữa hai ngăn kệ tủ - nên đặt ở kệ gia vị
+     hay kệ tủ thì chai cũng cao đúng bằng nhau. */
   .placed-badge.big{
-    width:auto; height:clamp(52px, 9.1vh, 106px);
+    width:auto; height:clamp(56px, 8.6vh, 100px);
   }
   .placed-badge.big img{ width:auto; height:100%; }
-  /* cỡ vừa: cho món cao đứng trong ngăn thấp, cao hơn cỡ thường nhưng vẫn lọt ngăn */
-  .placed-badge.vua{
-    width:auto; height:clamp(52px, 7.9vh, 88px);
-  }
-  .placed-badge.vua img{ width:auto; height:100%; }
   .placed-badge img{ width:100%; height:100%; object-fit:contain; display:block; }
 
   /* ---------- Right column: two boxes ---------- */

@@ -155,8 +155,9 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
       xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
              xoay:{dishrack:180} là úp ngược khi vào kệ chén
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
-      bigBadge  Không bắt buộc. bigBadge:true là món hiện to gấp đôi (chai cao
-             đứng trên kệ hở), bigBadge:'vua' là cỡ vừa cho ngăn thấp như kệ tủ
+      bigBadge  Không bắt buộc. Món cao như chai dầu thì hiện cao hơn món
+             thường. Chiều cao lấy theo khe hẹp nhất nó phải lọt (khoảng giữa
+             hai ngăn kệ tủ) nên đặt ở đâu chai cũng cao bằng nhau
 
   MỘT MÓN CẤT ĐƯỢC Ở HAI NƠI
   Viết cat thành danh sách là cả hai nơi đều tính đúng:
