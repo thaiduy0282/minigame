@@ -152,8 +152,8 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              left là mép trái, bottom là khoảng cách tới đáy ngăn. Chỉ tủ lạnh
              và kệ chén dùng toạ độ riêng; kệ tủ, kệ gia vị và sọt rác thì món
              tự xếp từ trái sang theo thứ tự kéo vào
-      xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ. Chén
-             có xoay:{dishrack:180} để úp xuống khi vào kệ chén
+      xoay   Không bắt buộc. Xoay ảnh khi đặt vào một nơi, tính theo độ, ví dụ
+             xoay:{dishrack:180} là úp ngược khi vào kệ chén
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
       bigBadge  Không bắt buộc. bigBadge:true là món hiện to gấp đôi (chai cao
              đứng trên kệ hở), bigBadge:'vua' là cỡ vừa cho ngăn thấp như kệ tủ

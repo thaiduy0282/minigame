@@ -93,7 +93,7 @@ var items = [
   {id:'migoi', label:'Mì gói', cat:'cabinet', why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
   {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
   {id:'chen', label:'Chén', cat:['dishrack','cabinet'],
-   spot:{dishrack:{left:'24%', bottom:'6%'}}, xoay:{dishrack:180},
+   spot:{dishrack:{left:'36%', bottom:'50%'}},
    why:{dishrack:'Chén vừa rửa xong thì úp lên kệ chén cho ráo nước đã.',
         cabinet:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'}},
 

@@ -93,21 +93,21 @@
   }
   /* 3. nhãn kệ chén nhô lên khỏi mép giá cho khỏi đè lên chỗ úp chén */
   .dropzone.dishrack .zone-label{ margin-left:-6%; margin-top:-1.75em; }
+  /* Món đã cất chỉ hiện ảnh, không có thẻ trắng phía sau, cho giống như món
+     nằm thật trong bếp. Đổ bóng nhẹ để món không lẫn vào tranh nền. */
   .placed-badge{
-    background:rgba(255,255,255,0.95); border-radius:11px; padding:3px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.22);
+    background:none; box-shadow:none; padding:0;
     width:52px; height:52px;
   }
+  .placed-badge img{ filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35)); }
   /* món cao: ô đựng ôm sát bề ngang ảnh, cao theo màn hình để không đụng nhãn ngăn */
   .placed-badge.big{
     width:auto; height:clamp(52px, 9.1vh, 106px);
-    border-radius:16px; padding:5px;
   }
   .placed-badge.big img{ width:auto; height:100%; }
   /* cỡ vừa: cho món cao đứng trong ngăn thấp, cao hơn cỡ thường nhưng vẫn lọt ngăn */
   .placed-badge.vua{
     width:auto; height:clamp(52px, 7.9vh, 88px);
-    border-radius:14px; padding:4px;
   }
   .placed-badge.vua img{ width:auto; height:100%; }
   .placed-badge img{ width:100%; height:100%; object-fit:contain; display:block; }
