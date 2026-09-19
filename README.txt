@@ -29,7 +29,8 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
       Tủ lạnh - Kệ tủ - Kệ gia vị - Sọt rác
   Bên phải, từ trên xuống:
       - Tên trò chơi và 2 dòng luật chơi
-      - Khay 10 món cần cất giữ, xáo trộn ngẫu nhiên mỗi lần mở trang
+      - Khay 9 món cần cất giữ, xáo trộn ngẫu nhiên mỗi lần mở trang,
+        xếp 3 hàng 3 cột và tự phóng to hết cỡ màn hình cho phép
       - Ô quay số mời học sinh
 
 1.2 CÁCH CẤT MỘT MÓN
@@ -68,7 +69,7 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
   bấm "Quay tiếp". Nhờ vậy học sinh không kéo chen khi chưa tới lượt.
 
 1.6 MÀN CHIẾN THẮNG
-  Khi cất đúng đủ 10 món, một hộp lớn phủ kín màn hình hiện ra:
+  Khi cất đúng hết các món, một hộp lớn phủ kín màn hình hiện ra:
       - Bên trái: bạn nhỏ vui, dòng "Tuyệt vời! - Cảm ơn tất cả các bạn!"
         và nút "Chơi lại"
       - Bên phải: bảng các bạn đã tham gia, xếp theo thứ tự lên chơi
@@ -149,9 +150,19 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
              trăm: left là mép trái, bottom là khoảng cách tới đáy ngăn
       zoom   Không bắt buộc. Phóng to riêng món đó, ví dụ zoom:1.10 là thêm 10%
       bigBadge  Không bắt buộc. Món cao như chai thì hiện to gấp đôi trong ngăn
+      an     Không bắt buộc. Thêm an:true là TẠM CẤT món đó đi, món vẫn nằm
+             nguyên trong file, bỏ chữ an:true là hiện lại. Hộp cà phê đang
+             để an:true
 
   Thêm món mới: chép ảnh vào images/items/, thu giọng vào voice/correct/, rồi
   thêm một dòng như trên.
+
+  BAO NHIÊU MÓN THÌ ĐẸP NHẤT
+  Khay xếp 3 món một hàng, nên 9 món là vừa đúng 3 hàng đầy, thẻ to nhất và
+  không thừa chỗ trống. Cỡ ảnh không cố định: fitTray() trong js/game.js đo
+  chiều cao thật còn trống của cột phải rồi chia đều cho các hàng, nên càng
+  ít món ảnh càng to, và màn hình càng lớn ảnh càng to. Thêm nhiều món quá
+  thì ảnh tự nhỏ lại cho khỏi sinh thanh cuộn.
 
 3.2 SỬA DANH SÁCH HỌC SINH
   Cách 1 - sửa thẳng: mở js/students.js, đổi phần name của từng dòng.
@@ -195,6 +206,10 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
       CHEN_KHI_SAI       900   Kéo sai: chờ bao lâu rồi mới đọc câu nhắc
       NGHI_SAU_NHAC      100   Nghỉ giữa nhạc mừng và câu cảm ơn
       TRAY_EXTRA           5   Nới thêm chiều cao khay đồ, đơn vị điểm ảnh
+      TRAY_COT             3   Khay xếp mấy món một hàng
+      TRAY_ANH_MIN        44   Ảnh món không bao giờ nhỏ hơn bấy nhiêu điểm ảnh
+      TRAY_CHUA_NUT       74   Chỗ chừa cho nút "Quay tiếp" và lề ô quay số.
+                               Giảm xuống là khay đồ được thêm chỗ, ảnh to hơn
       SUM_HANG_TOI_DA      4   Bảng tổng kết tối đa mấy hàng
 
 3.7 ĐỔI TÊN TRÒ CHƠI HOẶC LUẬT CHƠI

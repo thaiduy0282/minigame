@@ -87,12 +87,17 @@ var items = [
   {id:'tieu', label:'Hũ tiêu', cat:'spice', why:'Tiêu để kệ gia vị nơi khô thoáng thì không bị mốc.'},
 
   {id:'migoi', label:'Mì gói', cat:'cabinet', spot:{left:'6%',  bottom:'8%'}, why:'Mì gói để trong tủ nơi khô ráo. Gặp ẩm mì sẽ mềm và mốc.'},
-  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
+  {id:'caphe', label:'Hộp cà phê', cat:'cabinet', an:true, spot:{left:'25%', bottom:'8%'}, why:'Hộp cà phê cất trong tủ kín, nơi khô ráo cho khỏi bay mùi thơm.'},
   {id:'chen', label:'Chén', cat:'cabinet', spot:{left:'6%',  bottom:'49%'}, why:'Chén nào ít dùng thì mình rửa sạch và cất vào tủ nhé, như vậy sẽ hạn chế bám bụi và ruồi đậu vào.'},
 
   {id:'racgiay', label:'Giấy bẩn', cat:'trash', why:'Giấy bẩn có nhiều vi khuẩn, phải bỏ ngay vào thùng rác.'},
   {id:'vochuoi', label:'Vỏ chuối', cat:'trash', why:'Vỏ chuối là rác. Để lâu sẽ thu hút ruồi và có mùi hôi.'}
 ];
+
+/* Tạm cất một món đi mà không xoá hẳn: thêm an:true vào dòng của món đó. Bỏ
+   chữ an:true là món hiện lại ngay. Khay xếp 3 món một hàng, nên để 9 món thì
+   vừa đúng 3 hàng đầy, thẻ to nhất và không thừa chỗ trống. */
+items = items.filter(function(mon){ return !mon.an; });
 
 var CAT_NAME = {fridge:'Tủ lạnh', spice:'Kệ gia vị', cabinet:'Kệ tủ', trash:'Sọt rác'};
 
@@ -144,9 +149,65 @@ function lockTrayHeight(){
   if(h > 0) box.style.height = (h + TRAY_EXTRA) + 'px';
 }
 
+/* Cỡ ảnh trong khay do chỗ trống thật của màn hình quyết định: lấy chiều cao
+   cột phải, trừ phần giới thiệu và phần chừa cho ô quay số, chỗ còn lại chia
+   đều cho các hàng. Nhờ vậy chiếu lên màn hình lớn thì món to hẳn ra, mà màn
+   hình nhỏ vẫn không sinh thanh cuộn. */
+var TRAY_COT = 3;             /* mỗi hàng mấy món */
+var TRAY_CHUA_QUAY = 0.24;    /* chừa bấy nhiêu phần cột phải cho ô quay số */
+var TRAY_ANH_MIN = 44;        /* ảnh không bao giờ nhỏ hơn bấy nhiêu điểm ảnh */
+var TRAY_CHUA_NUT = 74;       /* chỗ cho nút "Quay tiếp" và lề của ô quay số */
+
+function fitTray(){
+  var khay = document.getElementById('tray');
+  var box  = document.querySelector('.box.items');
+  var cot  = document.querySelector('.side-col');
+  var gioi = document.querySelector('.box.info');
+  if(!khay || !box || !cot || !gioi || !khay.children.length) return;
+  var caoCot = cot.clientHeight;
+  if(!caoCot) return;
+
+  khay.classList.add('dang-do');
+  box.style.height = 'auto';
+  /* Chừa cho ô quay số vừa đủ: ảnh học sinh, chỗ cho nút "Quay tiếp" ở góc, và
+     lề của hộp. Lúc chưa chơi thì ô này đang ẩn nên phải hỏi cỡ ảnh theo CSS
+     chứ không đo trên màn hình được. */
+  var anhHS = parseFloat(window.getComputedStyle(
+                document.querySelector('.turn-avatar')).height) || 0;
+  /* Cột phải thấp thì ô quay số nhường bớt chỗ: ảnh học sinh co lại vẫn nhìn
+     được, còn món trong khay mà nhỏ quá thì cả lớp không thấy gì. */
+  var thap = caoCot < 700;
+  var chuaQuay = anhHS
+    ? anhHS * (thap ? 0.8 : 1) + (thap ? 48 : TRAY_CHUA_NUT)
+    : Math.max(140, caoCot * TRAY_CHUA_QUAY);
+  var conLai = caoCot - gioi.offsetHeight - 14 - chuaQuay - 14;
+
+  /* đo phần chữ và lề của thẻ khi ảnh đang ở một cỡ đã biết */
+  khay.style.setProperty('--mon', '40px');
+  var vien = 0, the = khay.children;
+  for(var i=0;i<the.length;i++) vien = Math.max(vien, the[i].offsetHeight - 40);
+  var khungKhay = box.offsetHeight - khay.offsetHeight;   /* dòng tiêu đề và lề hộp */
+
+  var hang = Math.ceil(the.length / TRAY_COT);
+  var khe = parseFloat(window.getComputedStyle(khay).rowGap) || 0;
+  var anh = (conLai - khungKhay - (hang - 1) * khe) / hang - vien;
+  anh = Math.min(anh, the[0].clientWidth * 0.72);         /* đừng rộng quá bề ngang thẻ */
+  anh = Math.max(TRAY_ANH_MIN, Math.floor(anh));
+  khay.style.setProperty('--mon', anh + 'px');
+
+  /* chốt lại: nếu vẫn thừa ra thì hạ dần cho tới khi hết thanh cuộn */
+  lockTrayHeight();
+  for(var lan = 0; lan < 14 && khay.scrollHeight > khay.clientHeight + 1; lan++){
+    anh = Math.max(TRAY_ANH_MIN, anh - 4);
+    khay.style.setProperty('--mon', anh + 'px');
+    lockTrayHeight();
+  }
+  khay.classList.remove('dang-do');
+}
+
 window.addEventListener('resize', function(){
   layoutScene();
-  lockTrayHeight();
+  fitTray();
   fitSummary();
 });
 
@@ -680,11 +741,11 @@ function renderTray(){
 }
 shuffleItems();
 renderTray();
-lockTrayHeight();
 layoutScene();
+fitTray();
 window.addEventListener('load', function(){
   layoutScene();
-  lockTrayHeight();
+  fitTray();
   if(XEM_KET_QUA){                       /* xem trước màn chiến thắng với 20 bạn */
     gameStarted = true;
     var n = Math.min(20, students.length);
