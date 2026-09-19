@@ -52,12 +52,12 @@ PHẦN 1 - CÁC CHỨC NĂNG CỦA TRÒ CHƠI
 1.4 QUAY SỐ MỜI HỌC SINH
   - Mới mở trang: cô kéo thử vài món cho cả lớp xem, chưa quay số.
     Lượt chơi thử này không bị tính vào bảng tổng kết.
-  - Bấm "Bắt đầu quay số": cả màn hình mờ đi, hiện một vòng tròn lớn có dải
-    ảnh các bạn trượt ngang như máy quay số. Dải ảnh lao rất nhanh rồi chậm
-    dần (1,9 giây), sau đó bò thật chậm qua hai khuôn mặt cuối cho hồi hộp
-    (1,5 giây) và dừng đúng giữa khuôn mặt một bạn. Viền ảnh chuyển sang
-    vàng, hiện tên và đọc tên bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ về ô
-    bên phải.
+  - Bấm "Bắt đầu quay số": cả màn hình mờ đi, hiện một vòng tròn lớn, ảnh các
+    bạn đổi ngay tại chỗ chứ không chạy đi đâu. Lúc đầu đổi rất nhanh, rồi
+    mỗi lần một thưa dần, hai lần cuối cách nhau hơn nửa giây cho hồi hộp,
+    tổng cộng khoảng 3,5 giây. Ảnh dừng ở một bạn, viền chuyển sang vàng,
+    hiện tên và đọc tên bạn đó, giữ ảnh to 3,5 giây rồi thu nhỏ về ô bên
+    phải.
   - Bạn được mời tự chọn món bất kỳ trong khay và cất.
   - Cất xong, trò chơi DỪNG LẠI chờ cô: khay đồ mờ đi và hiện dòng
     "Hết lượt rồi - Bấm Quay tiếp để mời bạn khác".
@@ -192,10 +192,11 @@ PHẦN 3 - MUỐN SỬA NỘI DUNG
 3.6 ĐỔI CÁC MỐC THỜI GIAN
   Nằm ở đầu js/game.js, đơn vị mili giây (1000 = 1 giây):
 
-      SPIN_MS           1900   Chặng chạy nhanh của dải ảnh
-      SPIN_TAIL_MS      1500   Chặng bò chậm cuối cùng, tăng cho hồi hộp hơn
-      SPIN_TAIL_O          2   Bò chậm qua mấy khuôn mặt cuối
-      SPIN_TILES          22   Bao nhiêu khuôn mặt lướt qua trước khi dừng
+      SPIN_MAT            15   Bao nhiêu khuôn mặt hiện ra, ảnh cuối là bạn trúng
+      SPIN_STEP_MS        40   Quãng nghỉ giữa hai lần đổi ảnh lúc mới bắt đầu
+      SPIN_CHAM         1.25   Mỗi lần nghỉ lâu hơn lần trước bấy nhiêu lần.
+                               Tăng lên là vòng quay chậm và hồi hộp hơn
+      SPIN_FADE_MAX      260   Hai ảnh mờ chồng lên nhau tối đa bao lâu
       SPIN_HOLD_MS      3500   Giữ khuôn mặt to sau khi quay trúng
       DIALOG_MS         3000   Hộp thoại mở tối thiểu bao lâu
       CHEN_KHI_DUNG      800   Kéo đúng: chờ bao lâu rồi mới đọc giải thích

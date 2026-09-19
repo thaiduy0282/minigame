@@ -148,8 +148,7 @@ var total = items.length;
 /* ============ QUAY SỐ MỜI HỌC SINH ============ */
 var STUDENT_DIR = 'images/students/';
 var spinOverlay = document.getElementById('spin-overlay');
-var spinPhoto   = document.getElementById('spin-photo');
-var spinReel    = document.getElementById('spin-reel');
+var spinFaces   = document.getElementById('spin-faces');
 var spinName    = document.getElementById('spin-name');
 var spinHead    = document.getElementById('spin-head');
 var spinBox     = document.getElementById('spin-box');
@@ -160,14 +159,13 @@ var startBtn    = document.getElementById('start-btn');
 var respinBtn   = document.getElementById('respin-btn');
 
 var SPIN_HOLD_MS = 3500;      /* giữ khuôn mặt to bao lâu trước khi thu nhỏ */
-var SPIN_MS      = 1900;      /* chặng đầu: dải ảnh lao nhanh rồi chậm dần */
-var SPIN_TAIL_MS = 1500;      /* chặng cuối: bò thật chậm cho hồi hộp */
-var SPIN_TAIL_O  = 2;         /* bò chậm qua mấy khuôn mặt cuối */
-var SPIN_TILES   = 22;        /* bao nhiêu khuôn mặt lướt qua trước khi dừng */
-/* Hai đường cong được chọn sao cho tốc độ lúc giao nhau gần bằng nhau, nên mắt
-   thấy một mạch liền: lao vút - chậm dần - bò từng khuôn mặt - đứng hẳn. */
-var SPIN_EASE      = 'cubic-bezier(.15,.55,.6,.9)';
-var SPIN_TAIL_EASE = 'cubic-bezier(.25,.5,.45,1)';
+/* Vòng quay đổi ảnh ngay tại chỗ. Nhịp nhanh dần thành chậm dần là do quãng
+   nghỉ giữa hai lần đổi cứ dài thêm: 40ms, 50, 62... rồi 582, 728 - tổng cộng
+   khoảng 3,5 giây, càng về cuối càng hồi hộp. */
+var SPIN_MAT      = 15;       /* bao nhiêu khuôn mặt hiện ra, ảnh cuối là bạn trúng */
+var SPIN_STEP_MS  = 40;       /* quãng nghỉ giữa hai lần đổi lúc mới bắt đầu */
+var SPIN_CHAM     = 1.25;     /* mỗi lần nghỉ lâu hơn lần trước bấy nhiêu lần */
+var SPIN_FADE_MAX = 260;      /* hai ảnh mờ chồng lên nhau tối đa bao lâu */
 var hasStudents = (typeof students !== 'undefined') && students.length > 0;
 var gameStarted = false;    /* đã bấm "Bắt đầu" chưa - trước đó cô chơi thử tự do */
 var spinning = false;       /* đang quay thì khoá khay đồ */
@@ -217,11 +215,12 @@ function pickStudent(){
   return students[lastPicked];
 }
 
-/* Dựng dải ảnh cho vòng quay: một loạt khuôn mặt ngẫu nhiên, ô cuối cùng là
-   bạn được chọn. Trả về vị trí ô cuối để biết phải trượt đi bao xa. */
-function buildReel(target){
+/* Xếp sẵn các khuôn mặt chồng lên nhau, ảnh cuối cùng là bạn được chọn.
+   Xếp sẵn thế này thì lúc quay chỉ việc cho ảnh hiện lên, không phải tải ảnh
+   mới giữa chừng nên không bị chớp. */
+function buildFaces(target){
   var list = [];
-  while(list.length < SPIN_TILES){
+  while(list.length < SPIN_MAT - 1){
     var bag = students.slice();
     for(var i=bag.length-1;i>0;i--){
       var k = Math.floor(Math.random()*(i+1));
@@ -229,35 +228,18 @@ function buildReel(target){
     }
     list = list.concat(bag);
   }
-  list = list.slice(0, SPIN_TILES);
-  /* đừng để đúng ảnh đó nằm sát ngay trước ô dừng, nhìn sẽ như bị khựng */
+  list = list.slice(0, SPIN_MAT - 1);
+  /* đừng để đúng ảnh đó hiện ngay trước lúc chốt, nhìn sẽ như bị đứng máy */
   if(list.length && list[list.length-1] === target) list[list.length-1] = list[0];
   list.push(target);
 
   var html = '';
   for(var n=0;n<list.length;n++){
-    html += '<img src="' + STUDENT_DIR + list[n].file + '" alt="">';
+    html += '<img class="' + (n === 0 ? 'hien' : '') + '" src="' +
+            STUDENT_DIR + list[n].file + '" alt="">';
   }
-  spinReel.innerHTML = html;
+  spinFaces.innerHTML = html;
   return list.length - 1;
-}
-
-/* Tiếng "tạch" mỗi khi có một khuôn mặt chạy qua giữa vòng tròn. Đọc thẳng vị
-   trí thật của dải ảnh nên tiếng kêu thưa dần đúng theo lúc vòng quay chậm lại. */
-function keuTichTac(oRong){
-  var truoc = -1;
-  function nhin(){
-    if(!spinning || spinOverlay.classList.contains('landed')) return;
-    var m = window.getComputedStyle(spinReel).transform, x = 0;
-    if(m && m !== 'none'){
-      var so = m.slice(m.indexOf('(') + 1, m.indexOf(')')).split(',');
-      x = parseFloat(so[so.length === 6 ? 4 : 12]) || 0;
-    }
-    var o = Math.round(-x / oRong);
-    if(o !== truoc){ truoc = o; soundTick(); }
-    requestAnimationFrame(nhin);
-  }
-  requestAnimationFrame(nhin);
 }
 
 function spinForNextStudent(){
@@ -269,34 +251,23 @@ function spinForNextStudent(){
   spinName.textContent = target.name || '';   /* đặt sẵn, CSS giấu tới lúc dừng */
   spinOverlay.classList.add('show');
 
-  var idx = buildReel(target);
-  /* Bề ngang thật của một ô, kèm cả phần lẻ sau dấu phẩy: lấy số nguyên thì mỗi
-     ô lệch một chút, cộng dồn hơn hai chục ô sẽ dừng không khớp khuôn mặt.
-     Đọc theo width tính toán chứ không đo trên màn hình, vì lúc này vòng quay
-     đang phóng to dần nên số đo trên màn hình còn nhỏ hơn thật. */
-  var oRong = parseFloat(window.getComputedStyle(spinReel).width) || spinPhoto.clientWidth;
-  spinReel.style.transition = 'none';
-  spinReel.style.transform  = 'translate3d(0,0,0)';
-  void spinReel.offsetWidth;                  /* ép trình duyệt nhận mốc xuất phát */
-  var oCuoi = Math.min(SPIN_TAIL_O, idx);     /* mấy ô để dành cho chặng bò chậm */
-  spinReel.style.transition = 'transform ' + SPIN_MS + 'ms ' + SPIN_EASE;
-  spinReel.style.transform  = 'translate3d(' + (-(idx - oCuoi) * oRong) + 'px,0,0)';
-  keuTichTac(oRong);
+  var cuoi = buildFaces(target);
+  var mat = spinFaces.children;
+  var i = 0, nghi = SPIN_STEP_MS;
 
-  var daBo = false;
-  function boCham(){                          /* sang chặng cuối: lết từng khuôn mặt */
-    if(daBo) return;
-    daBo = true;
-    spinReel.style.transition = 'transform ' + SPIN_TAIL_MS + 'ms ' + SPIN_TAIL_EASE;
-    spinReel.style.transform  = 'translate3d(' + (-idx * oRong) + 'px,0,0)';
-    spinReel.addEventListener('transitionend', dung, {once:true});
-    setTimeout(dung, SPIN_TAIL_MS + 120);
+  function doiMat(){
+    i++;
+    /* ảnh mới nằm sau trong danh sách nên tự động đè lên ảnh cũ: chỉ cần cho nó
+       hiện dần là thành đổi mặt tại chỗ, không có vệt trôi ngang nào cả */
+    mat[i].style.transitionDuration = Math.min(nghi * 0.6, SPIN_FADE_MAX) + 'ms';
+    mat[i].classList.add('hien');
+    if(i >= cuoi){ dung(); return; }
+    soundTick();
+    nghi = nghi * SPIN_CHAM;                 /* lần sau nghỉ lâu hơn một chút */
+    setTimeout(doiMat, nghi);
   }
 
-  var daDung = false;
   function dung(){
-    if(daDung) return;
-    daDung = true;
     currentStudent = target;
     spinHead.textContent = 'Xin mời bạn';
     spinOverlay.classList.add('landed');
@@ -314,8 +285,8 @@ function spinForNextStudent(){
       if(turnLabel) turnLabel.textContent = 'Xin mời bạn';
     }, SPIN_HOLD_MS);
   }
-  spinReel.addEventListener('transitionend', boCham, {once:true});
-  setTimeout(boCham, SPIN_MS + 120);         /* phòng khi trình duyệt không báo */
+
+  setTimeout(doiMat, nghi);
 }
 
 function startStudentGame(){
